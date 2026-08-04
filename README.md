@@ -363,7 +363,88 @@ A continuación se presentan las respuestas fundamentadas a las preguntas clave 
 
 ---
 
-## 🎯 6. Conclusiones
+## 🧪 6. Demostración del Funcionamiento Integral y Cumplimiento de Objetivos
+
+Esta sección presenta una **visión unificada de extremo a extremo** de toda la práctica, demostrando cómo cada fase del laboratorio contribuye al ciclo de vida completo de un entorno de desarrollo virtualizado profesional.
+
+### 6.1 Flujo de Trabajo Completo (Ciclo de Vida)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CICLO DE VIDA DEL ENTORNO VIRTUALIZADO                  │
+│                                                                             │
+│  ┌───────────┐    ┌──────────┐    ┌──────────────┐    ┌───────────────┐    │
+│  │ FASE 1    │    │ FASE 2   │    │ FASE 3       │    │ FASE 4        │    │
+│  │ Definir   │───>│ Desplegar│───>│ Configurar   │───>│ Verificar     │    │
+│  │Vagrantfile│    │vagrant up│    │SSH + Paquetes│    │ifconfig + ping│    │
+│  └───────────┘    └──────────┘    └──────────────┘    └───────┬───────┘    │
+│                                                               │            │
+│  ┌───────────┐    ┌──────────┐    ┌──────────────┐            │            │
+│  │ FASE 7    │    │ FASE 6   │    │ FASE 5       │            │            │
+│  │ Git Push  │<───│ Git Init │<───│ Empaquetar   │<───────────┘            │
+│  │ a GitHub  │    │ + Config │    │ Custom Box   │                         │
+│  └───────────┘    └──────────┘    └──────────────┘                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 6.2 Demostración Funcional Fase por Fase
+
+#### **FASE 1 — Declaración de la Infraestructura**
+El archivo [Vagrantfile](file:///c:/Users/eduar/Documents/GitHub/Practica_AmbienteDesarrollo/Vagrantfile) define de forma declarativa en **Ruby** dos nodos virtuales sobre VirtualBox con una red privada aislada. Este único archivo es suficiente para reproducir el entorno completo en cualquier máquina que tenga Vagrant y VirtualBox instalados, sin intervención manual adicional.
+
+**Funcionamiento demostrado:** Un solo comando (`vagrant up`) interpreta el `Vagrantfile`, descarga la imagen base `bento/ubuntu-22.04`, crea dos VMs independientes y les asigna direcciones IP estáticas en el segmento `192.168.50.0/24`.
+
+#### **FASE 2 — Despliegue Automatizado**
+Vagrant gestiona el ciclo completo de arranque: descarga de la *box* base → creación de las instancias en VirtualBox → asignación de hostnames → configuración de adaptadores de red → montaje del directorio sincronizado.
+
+**Evidencia:** [vagrant_up.png](images/Seccion5/vagrant_up.png) y [vagrant_status.png](images/Seccion5/vagrant_status.png) confirman que ambas VMs (`servidor` y `cliente`) arrancan correctamente en estado `running`.
+
+#### **FASE 3 — Aprovisionamiento de Software**
+Mediante acceso SSH seguro (`vagrant ssh`) y escalado de privilegios (`sudo -i`), se instalaron herramientas de diagnóstico de red (`net-tools`) y de edición (`vim`) en ambos nodos, dejándolos operativos para tareas de administración y desarrollo.
+
+**Evidencia:** Las capturas de [servidor_sudo-i_app-get_Install_net-tools.png](images/Seccion5/servidor_sudo-i_app-get_Install_net-tools.png) y [cliente_app-get.png](images/Seccion5/cliente_app-get.png) confirman la instalación exitosa de paquetes en ambos nodos.
+
+#### **FASE 4 — Validación de Conectividad de Red**
+Se ejecutó `ifconfig` en ambos nodos para verificar la correcta asignación de direcciones IP:
+- **Servidor:** `eth1` → `192.168.50.3` (Red Privada)
+- **Cliente:** `eth1` → `192.168.50.2` (Red Privada)
+
+La prueba ICMP (`ping -c 4 192.168.50.3`) desde el cliente hacia el servidor reportó **4 paquetes transmitidos, 4 recibidos, 0% de pérdida**, con una latencia promedio de **4.46 ms**, demostrando que la conmutación de capa 2 y el enrutamiento de capa 3 funcionan correctamente dentro de la red virtual.
+
+**Evidencia:** [Servidor_ifconfig.png](images/Seccion5/ConfirmacionIp/Servidor_ifconfig.png), [Cliente_ifconfig.png](images/Seccion5/ConfirmacionIp/Cliente_ifconfig.png) y [Cliente_ping.png](images/Seccion5/ConfirmacionIp/Cliente_ping.png).
+
+#### **FASE 5 — Empaquetamiento y Reutilización**
+El servidor configurado (con `net-tools`, `vim` y configuraciones de red) fue empaquetado en una nueva *box* personalizada (`mynew.box`) y registrado localmente como `mynewbox`. Esto permite reutilizar el estado ya aprovisionado en futuros proyectos sin necesidad de reinstalar paquetes.
+
+**Evidencia:** [vagrant_package_servidor.png](images/Seccion6/vagrant_package_servidor.png) y [vagrant_box_ad.png](images/Seccion6/vagrant_box_ad.png).
+
+#### **FASE 6 — Integración de Control de Versiones**
+Dentro de la VM `servidor`, se instaló Git (`v2.34.1`), se configuró la identidad global del desarrollador (`Eduard Criollo Yule`, `eduard.criollo@uao.edu.co`) y se estableció `main` como rama por defecto. Finalmente, se creó la estructura de directorios requerida para el semestre (`mipracticas/Practica0,1,2`).
+
+**Evidencia:** [4.GitVersion.png](images/Seccion7/4.GitVersion.png), [5.GitConfig.png](images/Seccion7/5.GitConfig.png) y [6.Mkdir.png](images/Seccion7/6.Mkdir.png).
+
+#### **FASE 7 — Sincronización Bidireccional Host ↔ VM**
+Se demostró que los **Directorios Sincronizados** (*Synced Folders*) permiten crear un archivo en Windows (`prueba_sincronizacion.txt`) y accederlo instantáneamente dentro de la VM en `/vagrant`, comprobando la transparencia del mapeo bidireccional entre los sistemas de archivos NTFS (Host) y ext4 (Guest).
+
+**Evidencia:** [1.ArchivoAnfitrion.png](images/Seccion7/1.ArchivoAnfitrion.png), [2.VagrantUp.png](images/Seccion7/2.VagrantUp.png) y [3.VagrantSshServidor.png](images/Seccion7/3.VagrantSshServidor.png).
+
+---
+
+### 6.3 Mapeo de Objetivos ↔ Evidencias de Cumplimiento
+
+| Objetivo Planteado | Resultado Obtenido | Fases Involucradas | Evidencia Clave |
+|---|---|---|---|
+| Orquestar infraestructura multi-VM con un solo archivo de configuración | Dos VMs (`servidor` y `cliente`) desplegadas simultáneamente con `vagrant up` | Fase 1 y 2 | `vagrant_up.png`, `vagrant_status.png` |
+| Aprovisionar herramientas de red y edición dentro de las VMs | `net-tools` y `vim` instalados correctamente en ambos nodos vía `apt-get` | Fase 3 | Capturas de instalación en `Seccion5/` |
+| Validar conectividad IP en red privada `192.168.50.0/24` | Ping exitoso: 0% pérdida, RTT promedio 4.46 ms | Fase 4 | `Cliente_ping.png` |
+| Crear una *custom box* reutilizable con la configuración preinstalada | Box `mynewbox` (906 MB) generada y registrada localmente | Fase 5 | `vagrant_package_servidor.png`, `vagrant_box_ad.png` |
+| Demostrar la sincronización de carpetas entre Host y Guest | Archivo creado en Windows visible instantáneamente en `/vagrant` de la VM | Fase 7 | `1.ArchivoAnfitrion.png`, `3.VagrantSshServidor.png` |
+| Configurar Git e integrar con GitHub desde la VM | Git `2.34.1` instalado, identidad configurada, estructura de prácticas creada | Fase 6 | `4.GitVersion.png`, `5.GitConfig.png`, `6.Mkdir.png` |
+| Dominar comandos esenciales de Linux | 14 ejercicios desarrollados y documentados en informe independiente | Fase 3 (complementaria) | [Informe_Ejercicios_Linux.pdf](Informe_Ejercicios_Linux.pdf) |
+
+---
+
+## 🎯 7. Conclusiones
 
 1. **Eficiencia en la Automatización de Infraestructura:** El uso de Vagrant permitió desplegar una topología cliente-servidor completa de dos máquinas virtuales en cuestión de minutos de manera totalmente reproducible y aislada.
 2. **Robustez en la Configuración de Red:** Se validó la separación de la red NAT (para acceso a repositorios públicos de Ubuntu) y la red privada fija (para la comunicación directa cliente-servidor en el segmento `192.168.50.0/24`), confirmando 0% de pérdida de paquetes en pruebas ICMP.
