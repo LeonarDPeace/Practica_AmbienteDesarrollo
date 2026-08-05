@@ -6,11 +6,10 @@
 **Correo Institucional:** `eduard.criollo@uao.edu.co`  
 **Semestre:** 9no Semestre  
 **Repositorio:** [Practica_AmbienteDesarrollo](https://github.com/CriolloYule/Practica_AmbienteDesarrollo)  
-**Estado:** ✅ **Informe Académico de Entrega y Sustentación (100% Completado)**  
 
 ---
 
-## 📌 1. Introducción y Objetivos del Laboratorio
+## 1. Introducción y Objetivos del Laboratorio
 
 ### 1.1 Introducción
 La adopción de ambientes virtualizados y la infraestructura como código (IaC - *Infrastructure as Code*) constituye un pilar esencial en el desarrollo moderno de software y la administración de redes. Este informe documenta formalmente la implementación, verificación y sustentación de un entorno cliente-servidor automatizado utilizando **Vagrant** como orquestador, **Oracle VirtualBox** como hipervisor base, Linux **Ubuntu 22.04 LTS** como sistema operativo en los nodos invitados, y **Git / GitHub** para la gestión de versiones.
@@ -25,7 +24,7 @@ La adopción de ambientes virtualizados y la infraestructura como código (IaC -
 
 ---
 
-## 🏗️ 2. Arquitectura de la Solución Virtualizada
+## 2. Arquitectura de la Solución Virtualizada
 
 ### 2.1 Especificaciones de la Infraestructura
 
@@ -84,7 +83,7 @@ end
 
 ---
 
-## 🔍 3. Análisis a Profundidad por Secciones y Evidencias Fotográficas
+## 3. Análisis a Profundidad por Secciones y Evidencias Fotográficas
 
 A continuación se presenta el **análisis exhaustivo y detallado de cada una de las 20 capturas de pantalla** registradas durante la ejecución del laboratorio.
 
@@ -335,7 +334,7 @@ A continuación se presentan las respuestas fundamentadas a las preguntas clave 
 
 ---
 
-## 📊 5. Matriz Consolidada de Evidencias Integradas
+## 5. Matriz Consolidada de Evidencias Integradas
 
 | Sección | Elemento / Procedimiento | Estado | Archivo de Evidencia Integrado |
 |---|---|---|---|
@@ -444,7 +443,7 @@ Se demostró que los **Directorios Sincronizados** (*Synced Folders*) permiten c
 
 ---
 
-## 🎯 7. Conclusiones
+## 7. Conclusiones
 
 1. **Eficiencia en la Automatización de Infraestructura:** El uso de Vagrant permitió desplegar una topología cliente-servidor completa de dos máquinas virtuales en cuestión de minutos de manera totalmente reproducible y aislada.
 2. **Robustez en la Configuración de Red:** Se validó la separación de la red NAT (para acceso a repositorios públicos de Ubuntu) y la red privada fija (para la comunicación directa cliente-servidor en el segmento `192.168.50.0/24`), confirmando 0% de pérdida de paquetes en pruebas ICMP.
@@ -452,5 +451,3 @@ Se demostró que los **Directorios Sincronizados** (*Synced Folders*) permiten c
 4. **Integración Transparente de Flujos de Trabajo:** La sincronización de directorios entre Windows y Linux junto con la integración de Git facilitan un flujo de trabajo híbrido eficiente y seguro para el desarrollo de software durante todo el ciclo académico.
 
 ---
-
-*Informe académico y guía de sustentación finalizado y firmado para entrega.*
