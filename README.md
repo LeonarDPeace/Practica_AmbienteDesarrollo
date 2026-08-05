@@ -314,55 +314,7 @@ A continuación se presenta el **análisis exhaustivo y detallado de cada una de
 
 ---
 
-## ❓ 4. Cuestionario Teórico-Práctico para la Sustentación Oral
-
-A continuación se presentan las respuestas fundamentadas a las preguntas clave del laboratorio:
-
-### 1. ¿En qué consiste un archivo `Vagrantfile` y qué lenguaje utiliza?
-* **Respuesta:** El `Vagrantfile` es el archivo de configuración declarativo principal de Vagrant. Está escrito en sintaxis del lenguaje **Ruby**. Su propósito es describir la infraestructura deseada: qué cajas (*boxes*) usar, cuántas máquinas virtuales instanciar, qué IP asignarle a cada una, cuánto hardware (RAM/CPU) reservar y qué scripts de aprovisionamiento ejecutar.
-
-### 2. ¿Cuál es la diferencia entre `vagrant suspend`, `vagrant halt` y `vagrant destroy`?
-* **`vagrant suspend`:** Pausa la máquina virtual guardando el estado actual de la memoria RAM en el disco duro. Es el método más rápido para reanudar el trabajo (`vagrant up`).
-* **`vagrant halt`:** Apaga la máquina virtual de manera limpia mediante una señal de apagado del sistema operativo (*shutdown*). Conserva todo el disco duro pero libera la memoria RAM del anfitrión.
-* **`vagrant destroy`:** Elimina por completo las instancias de las máquinas virtuales y sus discos duros asociados en VirtualBox. Libera todo el espacio en disco.
-
-### 3. ¿Cómo funciona la sincronización de carpetas en Vagrant (*Synced Folders*)?
-* **Respuesta:** Vagrant utiliza controladores a nivel de hipervisor (Guest Additions de VirtualBox o montajes NFS/SMB) para mapear carpetas del sistema anfitrión hacia el sistema invitado. Por defecto, vincula la carpeta raíz del proyecto anfitrión en la ruta `/vagrant` dentro del contenedor Linux, permitiendo editar código en editores gráficos en Windows y ejecutarlo dentro del entorno virtualizado Linux.
-
-### 4. ¿Por qué GitHub exige Tokens de Acceso Personal (PAT) en lugar de contraseñas tradicionales?
-* **Respuesta:** Desde agosto de 2021, GitHub eliminó la autenticación mediante contraseña por consola por motivos de seguridad. Los Personal Access Tokens (PAT) ofrecen mayor seguridad ya que pueden ser revocados individualmente, tienen fecha de caducidad configurable y permiten limitar los permisos (*scopes*) a repositorios específicos sin exponer las credenciales maestras de la cuenta.
-
----
-
-## 5. Matriz Consolidada de Evidencias Integradas
-
-| Sección | Elemento / Procedimiento | Estado | Archivo de Evidencia Integrado |
-|---|---|---|---|
-| **Sec. 5** | Despliegue de VMs con `vagrant up` | ✅ Verificado | [vagrant_up.png](images/Seccion5/vagrant_up.png) |
-| **Sec. 5** | Verificación de Estado `vagrant status` | ✅ Verificado | [vagrant_status.png](images/Seccion5/vagrant_status.png) |
-| **Sec. 5** | SSH a Servidor y Sudo Root | ✅ Verificado | [servidor_vagrant_shhServidor.png](images/Seccion5/servidor_vagrant_shhServidor.png) |
-| **Sec. 5** | Instalación `net-tools` en Servidor | ✅ Verificado | [servidor_sudo-i_app-get_Install_net-tools.png](images/Seccion5/servidor_sudo-i_app-get_Install_net-tools.png) |
-| **Sec. 5** | Instalación `vim` en Servidor | ✅ Verificado | [servidor_apt-get_Install-vim.png](images/Seccion5/servidor_apt-get_Install-vim.png) |
-| **Sec. 5** | SSH a Cliente y Sudo Root | ✅ Verificado | [cliente_vagrant-ssh-cliente.png](images/Seccion5/cliente_vagrant-ssh-cliente.png) |
-| **Sec. 5** | Escalado de Privilegios en Cliente | ✅ Verificado | [cliente_sudo-i.png](images/Seccion5/cliente_sudo-i.png) |
-| **Sec. 5** | Instalación `net-tools` en Cliente | ✅ Verificado | [cliente_app-get.png](images/Seccion5/cliente_app-get.png) |
-| **Sec. 5** | Instalación `vim` en Cliente | ✅ Verificado | [cliente_apt-get-vim.png](images/Seccion5/cliente_apt-get-vim.png) |
-| **Sec. 5** | Interfaces de Red Servidor (`192.168.50.3`) | ✅ Verificado | [Servidor_ifconfig.png](images/Seccion5/ConfirmacionIp/Servidor_ifconfig.png) |
-| **Sec. 5** | Interfaces de Red Cliente (`192.168.50.2`) | ✅ Verificado | [Cliente_ifconfig.png](images/Seccion5/ConfirmacionIp/Cliente_ifconfig.png) |
-| **Sec. 5** | Conectividad ICMP `ping` Cliente -> Servidor | ✅ Verificado | [Cliente_ping.png](images/Seccion5/ConfirmacionIp/Cliente_ping.png) |
-| **Sec. 6** | Empaquetamiento `vagrant package servidor` | ✅ Verificado | [vagrant_package_servidor.png](images/Seccion6/vagrant_package_servidor.png) |
-| **Sec. 6** | Adición de Box `vagrant box add mynewbox` | ✅ Verificado | [vagrant_box_ad.png](images/Seccion6/vagrant_box_ad.png) |
-| **Sec. 7-A4** | Taller Práctico de Comandos Linux | ✅ Verificado | [Informe_Ejercicios_Linux.pdf](file:///c:/Users/eduar/Documents/GitHub/Practica_AmbienteDesarrollo/Informe_Ejercicios_Linux.pdf) |
-| **Sec. 7-A5** | Directorios Sincronizados (Host Windows) | ✅ Verificado | [1.ArchivoAnfitrion.png](images/Seccion7/1.ArchivoAnfitrion.png) |
-| **Sec. 7-A5** | Directorios Sincronizados (Vagrant Up) | ✅ Verificado | [2.VagrantUp.png](images/Seccion7/2.VagrantUp.png) |
-| **Sec. 7-A5** | Directorios Sincronizados (VM Linux `/vagrant`) | ✅ Verificado | [3.VagrantSshServidor.png](images/Seccion7/3.VagrantSshServidor.png) |
-| **Sec. 7-B1** | Instalación de Git en VM Servidor | ✅ Verificado | [4.GitVersion.png](images/Seccion7/4.GitVersion.png) |
-| **Sec. 7-B1** | Configuración Global `git config` | ✅ Verificado | [5.GitConfig.png](images/Seccion7/5.GitConfig.png) |
-| **Sec. 7-B2** | Estructura de Repositorio `mipracticas` | ✅ Verificado | [6.Mkdir.png](images/Seccion7/6.Mkdir.png) |
-
----
-
-## 🧪 6. Demostración del Funcionamiento Integral y Cumplimiento de Objetivos
+## 6. Demostración del Funcionamiento Integral y Cumplimiento de Objetivos
 
 Esta sección presenta una **visión unificada de extremo a extremo** de toda la práctica, demostrando cómo cada fase del laboratorio contribuye al ciclo de vida completo de un entorno de desarrollo virtualizado profesional.
 
