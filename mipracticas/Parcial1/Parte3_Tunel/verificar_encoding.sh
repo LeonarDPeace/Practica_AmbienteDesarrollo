@@ -34,10 +34,14 @@ TUNEL_URL="${1%/}"  # Eliminar trailing slash si existe
 # ── Recursos a verificar ──────────────────────────────────────────────────
 declare -a RECURSOS=(
     "index.html"
+    "index_grande.html"
     "styles.css"
+    "styles.min.css"
     "app.js"
+    "app.min.js"
     "data.json"
     "image.svg"
+    "feed.xml"
     "texto_grande.txt"
     "pagina_personalizada.html"
     "foto.jpg"
