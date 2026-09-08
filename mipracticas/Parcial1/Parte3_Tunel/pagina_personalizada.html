@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página de identificación estudiantil — Parcial 1 Servicios Telemáticos 2026-02">
+    <title>Identificación — Parcial 1 Servicios Telemáticos</title>
+    <style>
+        :root {
+            --bg:       #0f1117;
+            --card:     #1a1d27;
+            --border:   #2d3748;
+            --accent:   #38bdf8;
+            --accent2:  #818cf8;
+            --text:     #e2e8f0;
+            --muted:    #94a3b8;
+            --success:  #6ee7b7;
+            --font-sans: 'Segoe UI', system-ui, sans-serif;
+            --font-mono: 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(56,189,248,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            padding: 0.25rem 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+        }
+
+        .info-item .label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .info-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .info-item.highlight .value {
+            color: var(--accent);
+            font-family: var(--font-mono);
+        }
+
+        .info-item.full { grid-column: 1 / -1; }
+
+        .server-info {
+            background: rgba(56,189,248,0.06);
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .server-info h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .server-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.88rem;
+        }
+
+        .server-row:last-child { border-bottom: none; }
+        .server-row .k { color: var(--muted); }
+        .server-row .v { font-family: var(--font-mono); color: var(--success); font-size: 0.82rem; }
+
+        .encoding-demo {
+            background: #0a0d14;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #a5f3fc;
+            line-height: 1.9;
+        }
+
+        .encoding-demo .comment { color: #475569; }
+        .encoding-demo .header-name { color: var(--accent2); }
+        .encoding-demo .header-value { color: var(--success); }
+
+        footer {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        @media (max-width: 500px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .card { padding: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+
+        <div class="logo">
+            <div class="logo-icon">🎓</div>
+            <div class="logo-text">
+                <h1>Servicios Telemáticos</h1>
+                <p>Universidad — Facultad de Ingeniería</p>
+            </div>
+        </div>
+
+        <span class="badge">📋 Parcial 1 · 2026-02</span>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">Nombre Completo</div>
+                <div class="value" id="nombre">Eduardo [Apellido]</div>
+            </div>
+            <div class="info-item highlight">
+                <div class="label">Código Estudiantil</div>
+                <div class="value" id="codigo">XXXXXXXX</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Materia</div>
+                <div class="value">Servicios Telemáticos</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Semestre</div>
+                <div class="value">2026-02</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Fecha de Entrega</div>
+                <div class="value" id="fecha-entrega">Septiembre 2026</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Fecha/Hora Actual</div>
+                <div class="value" id="fecha-actual" style="font-size:0.85rem">—</div>
+            </div>
+            <div class="info-item full">
+                <div class="label">Evaluación</div>
+                <div class="value">Primer Parcial — Entrega Virtual vía GitHub + cloudflared</div>
+            </div>
+        </div>
+
+        <div class="server-info">
+            <h3>⚙️ Información del Servidor</h3>
+            <div class="server-row">
+                <span class="k">VM</span>
+                <span class="v">parcial_master (dns-master)</span>
+            </div>
+            <div class="server-row">
+                <span class="k">IP Privada</span>
+                <span class="v">192.168.50.10</span>
+            </div>
+            <div class="server-row">
+                <span class="k">Servidor Web</span>
+                <span class="v">Apache2 — parcial.empresa.local</span>
+            </div>
+            <div class="server-row">
+                <span class="k">DNS Maestro</span>
+                <span class="v">BIND9 → empresa.local (TSIG)</span>
+            </div>
+            <div class="server-row">
+                <span class="k">Túnel</span>
+                <span class="v">cloudflared → trycloudflare.com</span>
+            </div>
+            <div class="server-row">
+                <span class="k">Compresión</span>
+                <span class="v">mod_deflate (gzip) + mod_brotli</span>
+            </div>
+        </div>
+
+        <div class="encoding-demo">
+            <span class="comment"># Cabeceras HTTP de esta respuesta (gzip)</span><br>
+            <span class="header-name">Content-Encoding: </span><span class="header-value">gzip</span><br>
+            <span class="header-name">Vary: </span><span class="header-value">Accept-Encoding</span><br>
+            <span class="header-name">X-Servidor: </span><span class="header-value">parcial_master-192.168.50.10</span><br>
+            <span class="comment"># El túnel cloudflared preserva estas cabeceras intactas</span>
+        </div>
+
+        <footer>
+            Parcial 1 · Servicios Telemáticos 2026-02 ·
+            <a href="/" style="color:#38bdf8;text-decoration:none;">← Volver al inicio</a>
+        </footer>
+    </div>
+
+    <script>
+        // Mostrar fecha y hora actual en zona Colombia
+        document.getElementById('fecha-actual').textContent =
+            new Date().toLocaleString('es-CO', {
+                timeZone: 'America/Bogota',
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            });
+    </script>
+</body>
+</html>
