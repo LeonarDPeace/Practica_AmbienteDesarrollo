@@ -117,3 +117,9 @@ echo " Recursos disponibles:"
 ls -lh "${WWW_DIR}/"
 echo "════════════════════════════════════════════"
 echo ""
+echo "[DIAGNÓSTICO] Puertos y estado de escucha (puerto 80):"
+ss -ltnp | grep ':80' || true
+echo "[DIAGNÓSTICO] apache2ctl -S (vhosts y binding):"
+apache2ctl -S || true
+echo "[DIAGNÓSTICO] Últimas líneas del journal de apache2 (si existe):"
+journalctl -u apache2 --no-pager -n 40 || true

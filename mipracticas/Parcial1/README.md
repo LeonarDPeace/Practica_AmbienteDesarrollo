@@ -1,11 +1,13 @@
 # Parcial 1 — Servicios Telemáticos 2026-02
 
 > **Ejecutar todas las VMs desde este directorio:**
+>
 > ```powershell
 > cd mipracticas/Parcial1
 > vagrant up parcial_master
 > vagrant up parcial_slave
 > ```
+>
 > Para las prácticas anteriores usar el `Vagrantfile` en la **raíz** del repositorio.
 
 ---
@@ -38,12 +40,12 @@
 
 ## Prerrequisitos
 
-| Herramienta | Versión mínima | Instalación |
-|---|---|---|
-| VirtualBox | 6.1+ | [virtualbox.org](https://www.virtualbox.org) |
-| Vagrant | 2.3+ | [vagrantup.com](https://www.vagrantup.com) |
-| Git | 2.x | incluido |
-| curl | cualquiera | para `verificar_encoding.sh` desde el host |
+| Herramienta | Versión mínima | Instalación                                |
+| ----------- | ---------------- | ------------------------------------------- |
+| VirtualBox  | 6.1+             | [virtualbox.org](https://www.virtualbox.org) |
+| Vagrant     | 2.3+             | [vagrantup.com](https://www.vagrantup.com)   |
+| Git         | 2.x              | incluido                                    |
+| curl        | cualquiera       | para`verificar_encoding.sh` desde el host |
 
 ---
 
@@ -64,6 +66,7 @@ vagrant up parcial_master
 ```
 
 Este paso ejecuta en orden:
+
 1. `Parte1_DNS/provision/setup_dns_master.sh` → BIND9 Maestro
 2. `Parte2_Apache/provision/setup_apache.sh` → Apache2 + compresión
 3. `Parte3_Tunel/setup_cloudflared.sh` → Instalación cloudflared
@@ -217,23 +220,26 @@ cloudflared tunnel --url http://localhost:80  # Inicio rápido manual
 
 ## Solución de problemas frecuentes
 
-| Síntoma | Causa probable | Solución |
-|---|---|---|
-| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado | `vagrant provision parcial_master` primero |
-| Apache responde sin `Content-Encoding` | Módulo no habilitado | `a2enmod deflate brotli && systemctl reload apache2` |
-| Brotli no funciona | libapache2-mod-brotli no instalado | `apt install libapache2-mod-brotli && a2enmod brotli` |
-| cloudflared no descarga | Sin internet en la VM | Verificar NAT de VirtualBox en `parcial_master` |
-| `medir_compresion.sh` falla | No se ejecuta como root | `sudo bash medir_compresion.sh` |
-| Transferencia AXFR falla | tsig.key no coincide | Re-provisionar maestro primero, luego esclavo |
+| Síntoma                                                  | Causa probable                     | Solución                                               |
+| --------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------- |
+| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado            | `vagrant provision parcial_master` primero            |
+| Apache responde sin`Content-Encoding`                   | Módulo no habilitado              | `a2enmod deflate brotli && systemctl reload apache2`  |
+| Brotli no funciona                                        | libapache2-mod-brotli no instalado | `apt install libapache2-mod-brotli && a2enmod brotli` |
+| `curl: (7) Failed to connect to 192.168.50.10 port 80`    | Apache no iniciado / firewall / bind en otro puerto | `systemctl status apache2 && ss -ltnp | grep :80`  
+|                                                           |                                    | `journalctl -u apache2 -n 50` 
+|                                                           |                                    | `vagrant provision parcial_master` |
+| cloudflared no descarga                                   | Sin internet en la VM              | Verificar NAT de VirtualBox en`parcial_master`        |
+| `medir_compresion.sh` falla                             | No se ejecuta como root            | `sudo bash medir_compresion.sh`                       |
+| Transferencia AXFR falla                                  | tsig.key no coincide               | Re-provisionar maestro primero, luego esclavo           |
 
 ---
 
 ## Commits del parcial
 
-| Commit | Tipo | Descripción |
-|---|---|---|
-| Commit 0 | `chore(repo)` | Limpieza inicial — .gitignore + archivos pendientes |
-| Commit 1 | `feat(dns)` | BIND9 maestro/esclavo, TSIG, zonas, hardening, logging |
-| Commit 2 | `feat(apache)` | VirtualHost, mod_deflate, mod_brotli, medir_compresion.sh |
-| Commit 3 | `feat(tunel)` | cloudflared, página identificación, verificar_encoding.sh |
-| Commit 4 | `docs(parcial1)` | ANALISIS_CRITICO.md + README.md |
+| Commit   | Tipo               | Descripción                                                |
+| -------- | ------------------ | ----------------------------------------------------------- |
+| Commit 0 | `chore(repo)`    | Limpieza inicial — .gitignore + archivos pendientes        |
+| Commit 1 | `feat(dns)`      | BIND9 maestro/esclavo, TSIG, zonas, hardening, logging      |
+| Commit 2 | `feat(apache)`   | VirtualHost, mod_deflate, mod_brotli, medir_compresion.sh   |
+| Commit 3 | `feat(tunel)`    | cloudflared, página identificación, verificar_encoding.sh |
+| Commit 4 | `docs(parcial1)` | ANALISIS_CRITICO.md + README.md                             |
