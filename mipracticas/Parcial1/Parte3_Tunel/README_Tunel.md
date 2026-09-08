@@ -40,7 +40,7 @@ curl -sI http://localhost/index.html | grep -i content-encoding
 ### 2. Iniciar el túnel
 ```bash
 # Dentro de parcial_master:
-bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh
+sudo bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh
 ```
 Esperar hasta ver una línea como:
 ```
@@ -61,6 +61,19 @@ curl -sI -H "Accept-Encoding: br"   https://TU-URL.trycloudflare.com/data.json
 # Segunda terminal (el túnel corre en la primera)
 vagrant ssh parcial_master
 bash /vagrant/Parte3_Tunel/verificar_encoding.sh https://TU-URL.trycloudflare.com
+```
+
+Nota: si desea ejecutar el túnel en background (no interactivo), puede usar:
+
+```bash
+nohup sudo bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
+```
+
+Detener proceso en background:
+
+```bash
+pkill -f cloudflared
+# o: kill <PID>
 ```
 
 ### 4. Resultado esperado
