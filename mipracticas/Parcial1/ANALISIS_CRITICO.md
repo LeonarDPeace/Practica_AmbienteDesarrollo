@@ -1,5 +1,15 @@
 # Análisis Crítico — Parcial 1 · Servicios Telemáticos 2026-02
 
+## Declaración de asistencia con IA
+
+Durante la elaboración de este proyecto se utilizaron **Gemini** y **Claude**
+como herramientas de asistencia para revisar documentación, proponer comandos,
+organizar explicaciones y detectar posibles inconsistencias. La configuración,
+los scripts y las pruebas deben ser revisados y comprendidos por el grupo; la
+responsabilidad del contenido entregado y de la sustentación corresponde a sus
+integrantes. Ningún resultado de un asistente sustituye la verificación real en
+las máquinas virtuales ni la evidencia en vivo solicitada por el docente.
+
 ---
 
 ## Punto 1: ¿Por qué TSIG es preferible a `allow-transfer` por IP para proteger las transferencias de zona DNS?

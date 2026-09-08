@@ -165,6 +165,7 @@ bash /vagrant/Parte3_Tunel/verificar_encoding.sh URL_REAL
 mipracticas/Parcial1/
 ├── Vagrantfile                      ← Entorno exclusivo del parcial
 ├── README.md                        ← Este archivo
+├── REVISION_RUBRICA.md              ← Matriz de cumplimiento frente al PDF
 ├── ANALISIS_CRITICO.md              ← Respuestas a los 5 puntos teóricos
 ├── 2026-02_Primer_Parcial_ServiciosTelematicos.pdf
 │
@@ -193,6 +194,7 @@ mipracticas/Parcial1/
 │   │   ├── app.js
 │   │   └── image.svg
 │   ├── medir_compresion.sh          ← Ejecutar como root en parcial_master
+│   ├── README_APACHE.md              ← Guia tecnica y checklist de Parte 2
 │   └── tabla_comparativa.md         ← Generada por medir_compresion.sh
 │
 └── Parte3_Tunel/
@@ -239,20 +241,28 @@ cloudflared tunnel --url http://localhost:80  # Inicio rápido manual
 
 ## Solución de problemas frecuentes
 
-| Síntoma                                                  | Causa probable                                      | Solución / comandos                                      |
-| --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
-| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado                             | `vagrant provision parcial_master`                      |
-| Apache responde sin `Content-Encoding`                   | Módulo no habilitado                                | `sudo a2enmod deflate brotli && sudo systemctl reload apache2` |
-| Brotli no funciona                                       | `libapache2-mod-brotli` no instalado                | `sudo apt install -y libapache2-mod-brotli && sudo a2enmod brotli` |
-| `curl: (7) Failed to connect ... port 80`                | Apache no iniciado o no escucha en :80              | `sudo systemctl status apache2` y `sudo ss -ltnp | grep :80` |
-| Apache falló durante el provisioning                    | Error de configuración o instalación                | `sudo journalctl -u apache2 -n 50` y `vagrant provision parcial_master` |
-| cloudflared no descarga / binario no encontrado          | Sin Internet o provisioning incompleto              | `sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh` |
-| Verificación del túnel falla                             | URL de ejemplo o túnel terminado                    | `cat /tmp/cloudflared.out`; usar URL real y `pgrep -af cloudflared` |
-| Se iniciaron varios túneles                              | Se ejecutó `nohup` más de una vez                   | `sudo pkill -f cloudflared` y arrancar uno solo         |
-| `medir_compresion.sh` falla                              | No se ejecuta como root                             | `sudo bash /vagrant/Parte2_Apache/medir_compresion.sh` |
-| Transferencia AXFR falla                                 | `tsig.key` no coincide o permisos                   | Revisar `/etc/bind` y logs; reprovisionar maestro y luego esclavo |
+| Síntoma | Causa probable | Solución / comandos |
+| --- | --- | --- |
+| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado | `vagrant provision parcial_master` |
+| Apache responde sin `Content-Encoding` | Módulo no habilitado | `sudo a2enmod deflate brotli && sudo systemctl reload apache2` |
+| Brotli no funciona | `libapache2-mod-brotli` no instalado | `sudo apt install -y libapache2-mod-brotli && sudo a2enmod brotli` |
+| `curl: (7) Failed to connect ... port 80` | Apache no iniciado o no escucha en :80 | `sudo systemctl status apache2` y `sudo ss -ltnp \| grep :80` |
+| Apache falló durante el provisioning | Error de configuración o instalación | `sudo journalctl -u apache2 -n 50` y `vagrant provision parcial_master` |
+| cloudflared no descarga / binario no encontrado | Sin Internet o provisioning incompleto | `sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh` |
+| Verificación del túnel falla | URL de ejemplo o túnel terminado | `cat /tmp/cloudflared.out`; usar URL real y `pgrep -af cloudflared` |
+| Se iniciaron varios túneles | Se ejecutó `nohup` más de una vez | `sudo pkill -f cloudflared` y arrancar uno solo |
+| `medir_compresion.sh` falla | No se ejecuta como root | `sudo bash /vagrant/Parte2_Apache/medir_compresion.sh` |
+| Transferencia AXFR falla | `tsig.key` no coincide o permisos | Revisar `/etc/bind` y logs; reprovisionar maestro y luego esclavo |
 
 ---
+
+## Integridad academica
+
+Para la elaboracion del proyecto se utilizaron Gemini y Claude como asistencia
+para revisar documentacion, proponer comandos, organizar explicaciones y
+detectar inconsistencias. El grupo reviso el resultado y mantiene la
+responsabilidad de comprender, verificar y sustentar cada linea de los archivos
+entregados. La declaracion ampliada se encuentra en `ANALISIS_CRITICO.md`.
 
 ## Commits del parcial
 
