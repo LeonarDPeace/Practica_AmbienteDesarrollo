@@ -14,8 +14,8 @@ zone "empresa.local" {
     # Obtener zona desde el maestro, autenticado con TSIG
     masters  { 192.168.50.10 key transfer-key; };
 
-    # Permitir NOTIFY del maestro con TSIG
-    allow-notify { key transfer-key; };
+    # Aceptar NOTIFY solo del maestro; la transferencia posterior exige TSIG.
+    allow-notify { 192.168.50.10; };
 };
 
 # ── Zona inversa: 192.168.50.x (esclavo) ────────────────────────────────
@@ -24,7 +24,7 @@ zone "50.168.192.in-addr.arpa" {
     file    "/var/cache/bind/50.168.192.zone";
 
     masters  { 192.168.50.10 key transfer-key; };
-    allow-notify { key transfer-key; };
+    allow-notify { 192.168.50.10; };
 };
 
 # ── Logging ──────────────────────────────────────────────────────────────

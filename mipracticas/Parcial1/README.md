@@ -92,7 +92,7 @@ vagrant ssh parcial_master
 # 1. Verificar zona directa (maestro)
 dig @192.168.50.10 empresa.local SOA +short
 dig @192.168.50.10 parcial.empresa.local A +short
-dig @192.168.50.10 www.empresa.local CNAME +short
+dig @192.168.50.10 ftp.empresa.local CNAME +short
 
 # 2. Verificar resolución inversa (PTR)
 dig @192.168.50.10 -x 192.168.50.10 +short
@@ -165,6 +165,7 @@ bash /vagrant/Parte3_Tunel/verificar_encoding.sh URL_REAL
 mipracticas/Parcial1/
 ├── Vagrantfile                      ← Entorno exclusivo del parcial
 ├── README.md                        ← Este archivo
+├── GUIA_SUSTENTACION.md             ← Secuencia de demostración en vivo
 ├── REVISION_RUBRICA.md              ← Matriz de cumplimiento frente al PDF
 ├── ANALISIS_CRITICO.md              ← Respuestas a los 5 puntos teóricos
 ├── 2026-02_Primer_Parcial_ServiciosTelematicos.pdf
@@ -203,12 +204,23 @@ mipracticas/Parcial1/
 │   └── tabla_comparativa.md         ← Generada por medir_compresion.sh
 │
 └── Parte3_Tunel/
-    ├── pagina_personalizada.html    ← Completar nombre y código
+    ├── pagina_personalizada.html    ← Identidad e identificador del grupo
     ├── setup_cloudflared.sh         ← Llamado por Vagrant
     ├── iniciar_tunel_cloudflared.sh ← Ejecutar manualmente
     ├── verificar_encoding.sh        ← Verificar preservación de cabeceras
     └── README_Tunel.md
 ```
+
+  ## Sustentación y entregables
+
+  La secuencia completa de demostración, incluyendo navegador DevTools, captura
+  Wireshark, pruebas DNS, tabla de resultados, acceso desde otra red y lista de
+  archivos que deben estar en GitHub, está en [GUIA_SUSTENTACION.md](GUIA_SUSTENTACION.md).
+
+  La matriz de cumplimiento frente al PDF y la rúbrica está en
+  [REVISION_RUBRICA.md](REVISION_RUBRICA.md). Un archivo de configuración o un
+  script demuestra reproducibilidad, pero la rúbrica también exige ejecutar y
+  mostrar las pruebas en vivo.
 
 ---
 

@@ -14,27 +14,30 @@ Sin embargo, **no se puede afirmar que cumple a la perfeccion todavia**. Los
 puntos de mayor riesgo son:
 
 - los registros AAAA ya fueron completados en la zona, pero deben validarse en vivo;
-- no hay evidencia documentada de IXFR, sincronizacion automatica y continuidad
-  despues de apagar el maestro;
-- Parte 2 tiene mediciones de tamano/tiempo, pero no ratios completos ni CPU;
-- faltan las demostraciones de navegador y Wireshark;
-- la pagina personalizada conserva placeholders de nombre y codigo;
-- debe declararse el uso de asistentes de IA y el grupo debe poder explicar cada
-  linea.
+- la evidencia de IXFR, sincronizacion automatica y continuidad despues de
+   apagar el maestro solo puede obtenerse ejecutando ambas VMs;
+- Parte 2 ya tiene script para ratios, ahorro y CPU local de `curl`, pero falta
+   regenerar la tabla con una ejecucion final;
+- la demostracion de navegador y Wireshark ya esta documentada en
+   `GUIA_SUSTENTACION.md`, pero debe hacerse en vivo;
+- la pagina personalizada ya contiene los datos de ambos integrantes, pero debe
+   demostrarse desde otra red;
+- la declaracion de uso de asistentes ya esta escrita y el grupo debe poder
+   explicar cada linea.
 
 Estados usados: **Cumple**, **Parcial** y **Pendiente**.
 
 ## Parte 1 — DNS (2.0 puntos)
 
-| Criterio de la rubrica | Estado | Evidencia o pendiente |
-|---|---|---|
-| Maestro con zona directa: A, AAAA, CNAME, MX, NS y SOA | Parcial | La zona ahora incluye A/AAAA para `www`, `mail`, `ns1` y `ns2`, además de `ftp` como CNAME. Falta validar la respuesta en la VM. |
-| Resolucion inversa PTR | Cumple en archivos | `50.168.192.zone` contiene PTR para `.10` y `.11`; debe demostrarse con `dig` en vivo. |
-| NOTIFY, AXFR/IXFR y sincronizacion automatica | Parcial | `notify yes`, `also-notify` y configuracion slave existen. Falta evidencia de IXFR y de modificar serial en maestro para observar actualizacion automatica. |
-| Transferencia TSIG y bloqueo AXFR no autorizado | Parcial | `allow-transfer` exige `transfer-key`. Deben ejecutarse AXFR sin clave y con clave, mostrando resultados y logs. |
-| Hardening: recursion no, allow-query y RRL | Cumple en configuracion | `recursion no`, `allow-recursion none`, `allow-query` limitado a localhost/red privada y RRL existen; falta demostrar consultas y rechazo de recursion. |
-| Auditoria queries/transfers/security | Cumple en configuracion | `named_logging.conf` separa categorias y archivos; falta mostrar entradas generadas durante las pruebas. |
-| Continuidad con maestro apagado | Pendiente de evidencia | El slave esta configurado, pero hay que apuntar un cliente al slave, detener BIND9/VM1 y repetir consultas directas e inversas. |
+| Puntos | Criterio de la rubrica | Estado | Evidencia o pendiente |
+|---:|---|---|---|
+| 0.4 | Maestro con zona directa: A, AAAA, CNAME, MX, NS y SOA | Parcial | La zona incluye A/AAAA para `www`, `mail`, `ns1` y `ns2`, además de `ftp` como CNAME. Falta validar la respuesta en la VM. |
+| 0.3 | Resolucion inversa PTR | Cumple en archivos | `50.168.192.zone` contiene PTR para `.10` y `.11`; debe demostrarse con `dig` en vivo. |
+| 0.4 | NOTIFY, AXFR/IXFR y sincronizacion automatica | Parcial | `notify`, `also-notify`, `ixfr-from-differences` y slave existen. Falta cambiar serial y mostrar el nuevo SOA/log. |
+| 0.3 | Transferencia TSIG y bloqueo AXFR no autorizado | Parcial | `allow-transfer` exige `transfer-key`; deben ejecutarse AXFR sin/con clave y mostrar logs. |
+| 0.2 | Hardening: recursion no, allow-query y RRL | Cumple en configuracion | Restricciones configuradas; falta demostrar recursion denegada y consultas permitidas. |
+| 0.2 | Auditoria queries/transfers/security | Cumple en configuracion | `named_logging.conf` separa categorias; falta mostrar entradas durante pruebas. |
+| 0.2 | Continuidad con maestro apagado | Pendiente de evidencia | Detener el maestro y repetir consultas directas/inversas contra el esclavo. |
 
 ### Correcciones/pruebas prioritarias de Parte 1
 
@@ -51,15 +54,15 @@ Estados usados: **Cumple**, **Parcial** y **Pendiente**.
 
 ## Parte 2 — Apache y compresion (2.0 puntos)
 
-| Criterio de la rubrica | Estado | Evidencia o pendiente |
-|---|---|---|
-| Apache, mod_deflate y DNS local | Parcial | Apache/VirtualHost estan automatizados y existe DNS para el dominio. Debe validarse que el servicio este activo y que `parcial.empresa.local` resuelva durante la demo. |
-| Gzip niveles 1/6/9 con mediciones | Cumple en script | `medir_compresion.sh` cambia la directiva y mide bytes/tiempo. No mide CPU de forma directa. |
-| Brotli calidades 5/11 | Cumple en script | El script cambia `BrotliCompressionQuality` y mide bytes/tiempo. Falta registrar costo de CPU. |
-| Tipos de archivo y exclusion de binarios | Cumple en archivos/provisioning | Hay HTML pequeno/grande, CSS/JS original y minificado, JSON, SVG, XML, texto, JPG y MP4; falta ejecutar la medicion final en la VM. |
-| Curl, navegador y Wireshark en vivo | Parcial | Hay comandos curl y script de medicion. Falta documentar/realizar evidencia DevTools Network y captura Wireshark. |
-| Tabla con ratio, ahorro, tiempo/CPU | Parcial | `medir_compresion.sh` ahora genera ratio, ahorro, tiempo y CPU local de `curl`; falta regenerar `tabla_comparativa.md` con la VM final y explicar que CPU es una aproximacion del cliente, no un perfil directo del proceso Apache. |
-| Analisis critico sustentado con datos | Parcial | `ANALISIS_CRITICO.md` analiza conceptos, pero no responde con todas las mediciones de Parte 2. `tabla_comparativa.md` incluye conclusiones que deben validarse con datos reales. |
+| Puntos | Criterio de la rubrica | Estado | Evidencia o pendiente |
+|---:|---|---|---|
+| 0.3 | Apache, mod_deflate y DNS local | Parcial | Automatizado; validar servicio y resolucion durante la demo. |
+| 0.3 | Gzip niveles 1/6/9 con mediciones | Cumple en script | Cambia niveles y mide; ejecutar en la VM final. |
+| 0.3 | Brotli calidades 5/11 | Cumple en script | Cambia calidades y mide; ejecutar en la VM final. |
+| 0.3 | Tipos de archivo y exclusion de binarios | Cumple en archivos/provisioning | Corpus completo; ejecutar medicion final. |
+| 0.3 | Curl, navegador y Wireshark en vivo | Parcial | La guia contiene pasos exactos; falta realizar la demostracion. |
+| 0.2 | Tabla con ratio, ahorro, tiempo/CPU | Parcial | El script genera columnas; falta regenerar tabla final y explicar limite de CPU de `curl`. |
+| 0.3 | Analisis critico sustentado con datos | Parcial | Debe responder los cinco puntos con los resultados finales. |
 
 ### Sobre el MD faltante de Parte 2
 
@@ -82,12 +85,12 @@ cubiertos y pendientes de sustentacion.
 
 ## Parte 3 — Tunel (1.0 punto)
 
-| Criterio de la rubrica | Estado | Evidencia o pendiente |
-|---|---|---|
-| Tunel activo y URL publica | Cumple en automatizacion | `setup_cloudflared.sh` instala y `iniciar_tunel_cloudflared.sh` inicia Quick Tunnel; la URL solo existe mientras el proceso esta activo. |
-| Pagina personalizada desde otra red | Parcial | La pagina ahora identifica a ambos integrantes, sus codigos y un identificador de despliegue; falta probarla desde datos moviles u otra red. |
-| Compresion a traves del tunel | Parcial | `verificar_encoding.sh` automatiza la comprobacion. Falta ejecutar con una URL real y mostrar `Content-Encoding` gzip/br. |
-| Analisis de seguridad y dos mitigaciones | Parcial | El PDF exige argumentacion oral; la documentacion debe mencionar exposicion publica, ausencia de autenticacion, apagar el tunel y al menos otra mitigacion concreta. |
+| Puntos | Criterio de la rubrica | Estado | Evidencia o pendiente |
+|---:|---|---|---|
+| 0.4 | Tunel activo y URL publica | Cumple en automatizacion | Quick Tunnel automatizado; mostrar salida y URL real. |
+| 0.3 | Pagina personalizada desde otra red | Parcial | Pagina completa; falta abrirla desde datos moviles u otra red. |
+| 0.1 | Compresion a traves del tunel | Parcial | Script listo; ejecutar con URL real y mostrar gzip/br. |
+| 0.2 | Analisis de seguridad y dos mitigaciones | Parcial | Guia lista; argumentar riesgos y mitigaciones en vivo. |
 
 ## Reproducibilidad y entregables
 
@@ -96,7 +99,7 @@ cubiertos y pendientes de sustentacion.
 | Vagrantfile y provisioning | Cumple | El `Vagrantfile` define ambas VMs y ejecuta provisioning en orden. |
 | Configuraciones y scripts en GitHub | Cumple en estructura | Estan organizados por parte; hay que revisar que no se suban secretos reales. |
 | Comandos utilizados | Cumple parcialmente | Estan en los README, pero se deben ejecutar en la misma secuencia durante la sustentacion. |
-| Integridad academica | Pendiente de declaracion | Se agrega una nota de uso de Gemini y Claude como asistencia; el grupo debe revisar y comprender el codigo. |
+| Integridad academica | Cumple en documentacion | La declaracion de uso de Gemini y Claude esta en `README.md` y `ANALISIS_CRITICO.md`; el grupo debe explicarla y comprender el codigo. |
 
 ## Checklist de sustentacion
 
@@ -109,6 +112,9 @@ cubiertos y pendientes de sustentacion.
 - [ ] Gzip 1/6/9 y Brotli 5/11 demostrados.
 - [ ] Tabla con bytes, ratio, ahorro y tiempo/CPU completa.
 - [ ] DevTools Network y Wireshark mostrados.
+- [ ] Wireshark capturando `tcp port 80` o visualizando `http || tcp.port == 80` en la interfaz VirtualBox Host-Only.
+- [ ] DevTools Network mostrando `Content-Encoding`, `Vary`, `Size` y `Transferred`.
+- [ ] Acceso a la pagina personalizada desde otra red, no solo desde la LAN.
 - [ ] Pagina personalizada con nombre, codigo, fecha e identificador reales.
 - [ ] Quick Tunnel activo, probado desde otra red y detenido al finalizar.
 - [ ] URL real del tunel usada en todas las verificaciones; nunca `XXXX`.

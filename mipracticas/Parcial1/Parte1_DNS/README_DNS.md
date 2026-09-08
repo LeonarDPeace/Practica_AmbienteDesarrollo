@@ -9,22 +9,23 @@
 
 ## Zona DNS
 
-| Registro | Tipo | Valor |
-|---|---|---|
-| empresa.local | SOA | ns1.empresa.local. (serial 2026090801) |
-| empresa.local | NS | ns1.empresa.local. |
-| empresa.local | NS | ns2.empresa.local. |
-| ns1.empresa.local | A | 192.168.50.10 |
-| ns2.empresa.local | A | 192.168.50.11 |
-| parcial.empresa.local | A | 192.168.50.10 |
-| www.empresa.local | A / AAAA | 192.168.50.10 / 2001:db8:50::80 |
-| ftp.empresa.local | CNAME | www.empresa.local |
-| empresa.local | MX | 10 mail.empresa.local |
-| mail.empresa.local | AAAA | 2001:db8:50::25 |
-| ns1.empresa.local | AAAA | 2001:db8:50::10 |
-| ns2.empresa.local | AAAA | 2001:db8:50::11 |
-| 10.50.168.192.in-addr.arpa | PTR | ns1.empresa.local |
-| 11.50.168.192.in-addr.arpa | PTR | ns2.empresa.local |
+| Registro                   | Tipo     | Valor                                  |
+| -------------------------- | -------- | -------------------------------------- |
+| empresa.local              | SOA      | ns1.empresa.local. (serial 2026090801) |
+| empresa.local              | NS       | ns1.empresa.local.                     |
+| empresa.local              | NS       | ns2.empresa.local.                     |
+| ns1.empresa.local          | A        | 192.168.50.10                          |
+| ns2.empresa.local          | A        | 192.168.50.11                          |
+| parcial.empresa.local      | A        | 192.168.50.10                          |
+| mail.empresa.local         | A        | 192.168.50.10                          |
+| www.empresa.local          | A / AAAA | 192.168.50.10 / 2001:db8:50::80        |
+| ftp.empresa.local          | CNAME    | www.empresa.local                      |
+| empresa.local              | MX       | 10 mail.empresa.local                  |
+| mail.empresa.local         | AAAA     | 2001:db8:50::25                        |
+| ns1.empresa.local          | AAAA     | 2001:db8:50::10                        |
+| ns2.empresa.local          | AAAA     | 2001:db8:50::11                        |
+| 10.50.168.192.in-addr.arpa | PTR      | ns1.empresa.local                      |
+| 11.50.168.192.in-addr.arpa | PTR      | ns2.empresa.local                      |
 
 ## Hardening aplicado
 
@@ -44,9 +45,9 @@ dig @192.168.50.10 empresa.local SOA +short
 # 2. Comprobar SOA del esclavo (sincronizado vía AXFR)
 dig @192.168.50.11 empresa.local SOA +short
 
-# 3. Resolución directa (A y CNAME)
+# 3. Resolución directa (A, AAAA y CNAME)
 dig @192.168.50.10 parcial.empresa.local A +short
-dig @192.168.50.10 www.empresa.local CNAME +short
+dig @192.168.50.10 ftp.empresa.local CNAME +short
 dig @192.168.50.10 www.empresa.local AAAA +short
 dig @192.168.50.10 mail.empresa.local AAAA +short
 dig @192.168.50.10 ns1.empresa.local AAAA +short
@@ -69,19 +70,25 @@ sudo tail -n 20 /var/log/named/queries.log
 
 # 7. Secuencia automatizada de validacion (incluye AXFR y recursion):
 sudo bash /vagrant/Parte1_DNS/provision/verificar_dns_parcial.sh
+
+# 8. Continuidad: con named detenido en el maestro, consultar el esclavo:
+#    sudo systemctl stop named       (en parcial_master)
+dig @192.168.50.11 www.empresa.local A +short
+dig @192.168.50.11 -x 192.168.50.10 +short
+#    sudo systemctl start named      (restaurar al finalizar)
 ```
 
 ## Archivos creados
 
-| Archivo | Descripción |
-|---|---|
-| `provision/master_named.conf.options` | Opciones BIND9 maestro |
-| `provision/master_named.conf.local` | Zonas y TSIG maestro |
-| `provision/slave_named.conf.options` | Opciones BIND9 esclavo |
-| `provision/slave_named.conf.local` | Zonas slave y TSIG esclavo |
-| `provision/empresa.local.zone` | Zona directa |
-| `provision/50.168.192.zone` | Zona inversa |
-| `provision/named_logging.conf` | Logging queries/transfers/security |
-| `provision/setup_dns_master.sh` | Script provisioning maestro |
-| `provision/setup_dns_slave.sh` | Script provisioning esclavo |
-| `provision/tsig.key` | Clave TSIG generada (auto, no editar) |
+| Archivo                                 | Descripción                          |
+| --------------------------------------- | ------------------------------------- |
+| `provision/master_named.conf.options` | Opciones BIND9 maestro                |
+| `provision/master_named.conf.local`   | Zonas y TSIG maestro                  |
+| `provision/slave_named.conf.options`  | Opciones BIND9 esclavo                |
+| `provision/slave_named.conf.local`    | Zonas slave y TSIG esclavo            |
+| `provision/empresa.local.zone`        | Zona directa                          |
+| `provision/50.168.192.zone`           | Zona inversa                          |
+| `provision/named_logging.conf`        | Logging queries/transfers/security    |
+| `provision/setup_dns_master.sh`       | Script provisioning maestro           |
+| `provision/setup_dns_slave.sh`        | Script provisioning esclavo           |
+| `provision/tsig.key`                  | Clave TSIG generada (auto, no editar) |

@@ -62,6 +62,17 @@ La primera y segunda consulta deben mostrar `Content-Encoding: gzip` y
 `Content-Encoding: br`, respectivamente. La imagen debe permanecer sin
 `Content-Encoding`.
 
+## Evidencia en navegador y Wireshark
+
+La demostracion detallada esta en
+[`GUIA_SUSTENTACION.md`](../GUIA_SUSTENTACION.md), secciones "Navegador:
+DevTools Network" y "Wireshark". En resumen, el navegador debe mostrar en
+Network las cabeceras `Content-Encoding`/`Vary` y las columnas `Size` y
+`Transferred`. Wireshark debe capturar el trafico HTTP local sobre la interfaz
+VirtualBox Host-Only con `tcp port 80` (captura) o `http || tcp.port == 80`
+(visualizacion). El trafico HTTPS de cloudflared no permite ver esas cabeceras
+porque esta cifrado; ese trafico se valida con `curl` contra la URL publica.
+
 ## CPU y evidencia pendiente para la sustentacion
 
 El script mide tamano transferido, tiempo de respuesta y tiempo de CPU local de
