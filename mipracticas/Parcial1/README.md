@@ -165,8 +165,6 @@ bash /vagrant/Parte3_Tunel/verificar_encoding.sh URL_REAL
 mipracticas/Parcial1/
 ├── Vagrantfile                      ← Entorno exclusivo del parcial
 ├── README.md                        ← Este archivo
-├── GUIA_SUSTENTACION.md             ← Secuencia de demostración en vivo
-├── REVISION_RUBRICA.md              ← Matriz de cumplimiento frente al PDF
 ├── ANALISIS_CRITICO.md              ← Respuestas a los 5 puntos teóricos
 ├── 2026-02_Primer_Parcial_ServiciosTelematicos.pdf
 │
@@ -211,16 +209,12 @@ mipracticas/Parcial1/
     └── README_Tunel.md
 ```
 
-  ## Sustentación y entregables
+## Sustentación y entregables
 
-  La secuencia completa de demostración, incluyendo navegador DevTools, captura
-  Wireshark, pruebas DNS, tabla de resultados, acceso desde otra red y lista de
-  archivos que deben estar en GitHub, está en [GUIA_SUSTENTACION.md](GUIA_SUSTENTACION.md).
-
-  La matriz de cumplimiento frente al PDF y la rúbrica está en
-  [REVISION_RUBRICA.md](REVISION_RUBRICA.md). Un archivo de configuración o un
-  script demuestra reproducibilidad, pero la rúbrica también exige ejecutar y
-  mostrar las pruebas en vivo.
+La sustentación se realiza en vivo con los comandos documentados en este
+README, mostrando DNS, Apache, compresión, navegador, Wireshark y cloudflared.
+Los archivos de configuración y scripts demuestran reproducibilidad, pero no
+reemplazan la ejecución de las pruebas solicitadas por la rúbrica.
 
 ---
 
