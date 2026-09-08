@@ -66,7 +66,29 @@ bash /vagrant/Parte3_Tunel/verificar_encoding.sh https://TU-URL.trycloudflare.co
 Nota: si desea ejecutar el túnel en background (no interactivo), puede usar:
 
 ```bash
-nohup sudo bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
+# Compruebe primero que no exista otro túnel activo:
+pgrep -af cloudflared
+
+# Si aparece un proceso anterior, deténgalo antes de iniciar uno nuevo:
+sudo pkill -f cloudflared
+
+nohup bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
+
+# Espere a que Cloudflare genere la URL y extraiga la URL real:
+sleep 5
+grep -oE 'https://[^ ]+trycloudflare.com' /tmp/cloudflared.out | tail -1
+```
+
+No use `https://XXXX.trycloudflare.com` ni `https://TU-URL.trycloudflare.com`: son
+marcadores de ejemplo. Sustituya la URL en los comandos de verificación por la
+URL real mostrada en `/tmp/cloudflared.out`.
+
+Si no aparece ninguna URL, revise el error y el estado del proceso:
+
+```bash
+cat /tmp/cloudflared.out
+pgrep -af cloudflared
+curl -I http://localhost:80
 ```
 
 Detener proceso en background:

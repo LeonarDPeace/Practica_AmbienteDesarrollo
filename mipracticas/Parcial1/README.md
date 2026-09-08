@@ -140,15 +140,21 @@ sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh
 
 # Dentro de parcial_master (terminal 1):
 # Inicia el túnel y muestra la URL pública (bloquea la terminal — Ctrl+C para detener)
-bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh
-# Alternativa (ejecución en background; útil para demos automatizadas):
-# nohup bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
-# Para detener el túnel en background:
-# pkill -f cloudflared || kill <PID>
-# Copiar la URL: https://XXXX.trycloudflare.com
 
-# Terminal 2 (o desde el host):
-bash /vagrant/Parte3_Tunel/verificar_encoding.sh https://XXXX.trycloudflare.com
+bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh
+
+# Alternativa: ejecución en background (la URL se guarda en /tmp/cloudflared.out):
+nohup bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
+
+# Esperar la URL real generada por Cloudflare (no usar XXXX como URL):
+sleep 5
+grep -oE 'https://[^ ]+trycloudflare.com' /tmp/cloudflared.out | tail -1
+
+# Para detener el túnel en background:
+# sudo pkill -f cloudflared
+
+# Terminal 2 (o desde el host), sustituyendo URL_REAL por la URL mostrada:
+bash /vagrant/Parte3_Tunel/verificar_encoding.sh URL_REAL
 ```
 
 ---
@@ -237,12 +243,14 @@ cloudflared tunnel --url http://localhost:80  # Inicio rápido manual
 | --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
 | `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado                             | `vagrant provision parcial_master`                      |
 | Apache responde sin `Content-Encoding`                   | Módulo no habilitado                                | `sudo a2enmod deflate brotli && sudo systemctl reload apache2` |
-| Brotli no funciona                                        | `libapache2-mod-brotli` no instalado                | `sudo apt install -y libapache2-mod-brotli && sudo a2enmod brotli` |
-| `curl: (7) Failed to connect to 192.168.50.10 port 80`   | Apache no iniciado / firewall / bind en otro puerto | `sudo systemctl status apache2`  y `sudo ss -ltnp | grep :80` `<-- comprobar listener`
-|                                                           |                                                     | `sudo journalctl -u apache2 -n 50`  y `vagrant provision parcial_master` (si provisioning falló)
-| cloudflared no descarga / binario no encontrado          | Sin internet en la VM o provisioning falló          | `sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh`  |
-| `medir_compresion.sh` falla                               | No se ejecuta como root                             | `sudo bash /vagrant/Parte2_Apache/medir_compresion.sh`  |
-| Transferencia AXFR falla                                   | `tsig.key` no coincide o permisos                  | Ver `/etc/bind` y logs; reprovisionar maestro primero, luego esclavo |
+| Brotli no funciona                                       | `libapache2-mod-brotli` no instalado                | `sudo apt install -y libapache2-mod-brotli && sudo a2enmod brotli` |
+| `curl: (7) Failed to connect ... port 80`                | Apache no iniciado o no escucha en :80              | `sudo systemctl status apache2` y `sudo ss -ltnp | grep :80` |
+| Apache falló durante el provisioning                    | Error de configuración o instalación                | `sudo journalctl -u apache2 -n 50` y `vagrant provision parcial_master` |
+| cloudflared no descarga / binario no encontrado          | Sin Internet o provisioning incompleto              | `sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh` |
+| Verificación del túnel falla                             | URL de ejemplo o túnel terminado                    | `cat /tmp/cloudflared.out`; usar URL real y `pgrep -af cloudflared` |
+| Se iniciaron varios túneles                              | Se ejecutó `nohup` más de una vez                   | `sudo pkill -f cloudflared` y arrancar uno solo         |
+| `medir_compresion.sh` falla                              | No se ejecuta como root                             | `sudo bash /vagrant/Parte2_Apache/medir_compresion.sh` |
+| Transferencia AXFR falla                                 | `tsig.key` no coincide o permisos                   | Revisar `/etc/bind` y logs; reprovisionar maestro y luego esclavo |
 
 ---
 
