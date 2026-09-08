@@ -32,6 +32,10 @@ echo "║  Ctrl+C para detener el túnel.                       ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 
+echo "NOTA: Si desea ejecutar el túnel en background (no interactivo), puede usar:\n  nohup bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &"
+echo "Para detener un túnel en background: pkill -f cloudflared  (o kill <PID>)."
+echo "Si ejecuta en background, consulte /tmp/cloudflared.out o /tmp/cloudflared.log para la URL pública."
+
 # Verificar que cloudflared está instalado
 if ! command -v cloudflared &>/dev/null; then
     echo "ERROR: cloudflared no está instalado."

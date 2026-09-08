@@ -132,8 +132,19 @@ sudo bash /vagrant/Parte2_Apache/medir_compresion.sh
 ### Paso 6 — Túnel cloudflared
 
 ```bash
+# Verifique primero que Apache escucha en :80 (dentro de la VM):
+sudo ss -ltnp | grep :80 || sudo apache2ctl -S
+
+# Si cloudflared no fue instalado por el provisioning:
+sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh
+
 # Dentro de parcial_master (terminal 1):
+# Inicia el túnel y muestra la URL pública (bloquea la terminal — Ctrl+C para detener)
 bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh
+# Alternativa (ejecución en background; útil para demos automatizadas):
+# nohup bash /vagrant/Parte3_Tunel/iniciar_tunel_cloudflared.sh > /tmp/cloudflared.out 2>&1 &
+# Para detener el túnel en background:
+# pkill -f cloudflared || kill <PID>
 # Copiar la URL: https://XXXX.trycloudflare.com
 
 # Terminal 2 (o desde el host):
@@ -214,23 +225,24 @@ a2enmod brotli                     # Habilitar mod_brotli si falta
 # ── cloudflared ───────────────────────────────────────────────────
 cloudflared --version              # Verificar instalación
 cloudflared tunnel --url http://localhost:80  # Inicio rápido manual
+# Verificar compresión contra URL pública (ejemplo)
+# bash /vagrant/Parte3_Tunel/verificar_encoding.sh https://TU-URL.trycloudflare.com
 ```
 
 ---
 
 ## Solución de problemas frecuentes
 
-| Síntoma                                                  | Causa probable                     | Solución                                               |
-| --------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------- |
-| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado            | `vagrant provision parcial_master` primero            |
-| Apache responde sin`Content-Encoding`                   | Módulo no habilitado              | `a2enmod deflate brotli && systemctl reload apache2`  |
-| Brotli no funciona                                        | libapache2-mod-brotli no instalado | `apt install libapache2-mod-brotli && a2enmod brotli` |
-| `curl: (7) Failed to connect to 192.168.50.10 port 80`    | Apache no iniciado / firewall / bind en otro puerto | `systemctl status apache2 && ss -ltnp | grep :80`  
-|                                                           |                                    | `journalctl -u apache2 -n 50` 
-|                                                           |                                    | `vagrant provision parcial_master` |
-| cloudflared no descarga                                   | Sin internet en la VM              | Verificar NAT de VirtualBox en`parcial_master`        |
-| `medir_compresion.sh` falla                             | No se ejecuta como root            | `sudo bash medir_compresion.sh`                       |
-| Transferencia AXFR falla                                  | tsig.key no coincide               | Re-provisionar maestro primero, luego esclavo           |
+| Síntoma                                                  | Causa probable                                      | Solución / comandos                                      |
+| --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
+| `setup_dns_slave.sh` falla con "tsig.key no encontrado" | Maestro no provisionado                             | `vagrant provision parcial_master`                      |
+| Apache responde sin `Content-Encoding`                   | Módulo no habilitado                                | `sudo a2enmod deflate brotli && sudo systemctl reload apache2` |
+| Brotli no funciona                                        | `libapache2-mod-brotli` no instalado                | `sudo apt install -y libapache2-mod-brotli && sudo a2enmod brotli` |
+| `curl: (7) Failed to connect to 192.168.50.10 port 80`   | Apache no iniciado / firewall / bind en otro puerto | `sudo systemctl status apache2`  y `sudo ss -ltnp | grep :80` `<-- comprobar listener`
+|                                                           |                                                     | `sudo journalctl -u apache2 -n 50`  y `vagrant provision parcial_master` (si provisioning falló)
+| cloudflared no descarga / binario no encontrado          | Sin internet en la VM o provisioning falló          | `sudo bash /vagrant/Parte3_Tunel/setup_cloudflared.sh`  |
+| `medir_compresion.sh` falla                               | No se ejecuta como root                             | `sudo bash /vagrant/Parte2_Apache/medir_compresion.sh`  |
+| Transferencia AXFR falla                                   | `tsig.key` no coincide o permisos                  | Ver `/etc/bind` y logs; reprovisionar maestro primero, luego esclavo |
 
 ---
 
