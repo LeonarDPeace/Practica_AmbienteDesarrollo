@@ -33,30 +33,32 @@
 ## Verificación
 
 ```bash
-# Desde el host (ajustar según tu red) o desde la VM maestro:
+# Desde la VM parcial_master (o desde el host si está enrutado):
 
 # 1. Comprobar SOA del maestro
-dig @192.168.50.10 empresa.local SOA
+dig @192.168.50.10 empresa.local SOA +short
 
-# 2. Comprobar SOA del esclavo (debe coincidir con maestro)
-dig @192.168.50.11 empresa.local SOA
+# 2. Comprobar SOA del esclavo (sincronizado vía AXFR)
+dig @192.168.50.11 empresa.local SOA +short
 
-# 3. Resolución directa
-dig @192.168.50.10 parcial.empresa.local A
-dig @192.168.50.10 www.empresa.local CNAME
+# 3. Resolución directa (A y CNAME)
+dig @192.168.50.10 parcial.empresa.local A +short
+dig @192.168.50.10 www.empresa.local CNAME +short
 
-# 4. Resolución inversa
-dig @192.168.50.10 -x 192.168.50.10
+# 4. Resolución inversa (PTR)
+dig @192.168.50.10 -x 192.168.50.10 +short
 
-# 5. Verificar transferencia de zona con TSIG
-#    (ejecutar dentro de parcial_master como root)
-dig @192.168.50.10 empresa.local AXFR -k /etc/bind/tsig.key
+# 5. Demostración de seguridad TSIG:
+# 5a. Transferencia SIN clave TSIG (debe ser RECHAZADA - Transfer failed):
+dig @192.168.50.10 empresa.local AXFR
 
-# 6. Ver logs de transferencia
-tail -f /var/log/named/transfers.log
+# 5b. Transferencia CON clave TSIG (exitosa - NOERROR, usar sudo para leer tsig.key):
+sudo dig @192.168.50.10 empresa.local AXFR -k /etc/bind/tsig.key
 
-# 7. Ver logs de seguridad (RRL, TSIG)
-tail -f /var/log/named/security.log
+# 6. Ver logs de auditoría dedicados:
+sudo tail -n 20 /var/log/named/transfers.log
+sudo tail -n 20 /var/log/named/security.log
+sudo tail -n 20 /var/log/named/queries.log
 ```
 
 ## Archivos creados

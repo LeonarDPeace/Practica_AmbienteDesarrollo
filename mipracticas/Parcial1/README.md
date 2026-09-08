@@ -86,20 +86,27 @@ vagrant up parcial_slave
 # SSH al maestro
 vagrant ssh parcial_master
 
-# Verificar zona directa (maestro)
-dig @192.168.50.10 empresa.local SOA
-dig @192.168.50.10 parcial.empresa.local A
-dig @192.168.50.10 www.empresa.local CNAME
+# 1. Verificar zona directa (maestro)
+dig @192.168.50.10 empresa.local SOA +short
+dig @192.168.50.10 parcial.empresa.local A +short
+dig @192.168.50.10 www.empresa.local CNAME +short
 
-# Verificar resolución inversa
-dig @192.168.50.10 -x 192.168.50.10
+# 2. Verificar resolución inversa (PTR)
+dig @192.168.50.10 -x 192.168.50.10 +short
 
-# Verificar esclavo (debe tener la misma zona)
-dig @192.168.50.11 empresa.local SOA
+# 3. Verificar esclavo (sincronizado vía AXFR)
+dig @192.168.50.11 empresa.local SOA +short
 
-# Ver logs de auditoría
-sudo tail -f /var/log/named/queries.log
-sudo tail -f /var/log/named/transfers.log
+# 4. Demostración de seguridad TSIG:
+# 4a. Transferencia SIN clave TSIG (debe ser RECHAZADA - Transfer failed):
+dig @192.168.50.10 empresa.local AXFR
+
+# 4b. Transferencia CON clave TSIG (exitosa - NOERROR):
+sudo dig @192.168.50.10 empresa.local AXFR -k /etc/bind/tsig.key
+
+# 5. Ver logs de auditoría dedicados:
+sudo tail -n 20 /var/log/named/transfers.log
+sudo tail -n 20 /var/log/named/queries.log
 ```
 
 ### Paso 5 — Verificar Apache y compresión
