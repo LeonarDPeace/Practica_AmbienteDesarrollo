@@ -45,7 +45,7 @@ Antes de iniciar la evaluación con el profesor, asegúrate de tener abiertas la
 * **Consola a Usar:** `[CONSOLA 2: VM SERVIDOR]`
 * **Comando a Mostrar/Ejecutar:**
   ```bash
-  grep -N "^write_enable" /etc/vsftpd.conf
+  grep -n "^write_enable" /etc/vsftpd.conf
   ```
 * **Qué Exponer al Profesor:**
   > *"Para permitir cualquier modificación en el servidor remoto como subir archivos (`STOR`), borrar (`DELE`) o crear carpetas (`MKD`), es indispensable activar `write_enable=YES` en `/etc/vsftpd.conf`. Sin esta directiva, vsftpd opera en modo de solo lectura."*

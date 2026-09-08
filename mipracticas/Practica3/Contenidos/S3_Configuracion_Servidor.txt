@@ -1,0 +1,50 @@
+Core Message
+The video provides a practical step-by-step tutorial on installing, configuring, and testing an Apache web server on Ubuntu. It demonstrates basic web page deployment, directory protection using HTTP basic authentication, and setting up Virtual Hosts to serve multiple domain names from a single server.
+
+Key Steps & Technical Highlights
+1. Installation & Service Control
+
+Environment Setup: Uses two virtual machines: a server (192.168.50.3) and a client (192.168.50.2).
+
+Package Management: Checks and installs the web server package using sudo apt list apache2 and sudo apt install apache2.
+
+Service Operations: Manages the service status via systemctl [status|stop|restart] apache2.
+
+2. Basic Web Content Deployment
+
+Web files are served from /var/www/html/.
+
+Replaces the default index.html with a custom, lightweight HTML page.
+
+Verified connectivity from the client using curl, wget, and a browser targeting the server IP.
+
+3. Password-Protecting Directories
+
+Created a restricted directory (/var/www/html/protegido).
+
+Configured access controls in /etc/apache2/apache2.conf to enforce authentication.
+
+Generated user credentials (htpasswd -c /etc/apache2/claves Juan and htpasswd /etc/apache2/claves Maria) to build an encrypted password file.
+
+Verified that non-authenticated access is denied while valid credentials grant entry.
+
+4. Virtual Hosting & DNS Integration
+
+DNS Setup: Directed the client's resolver (/etc/resolv.conf) to the server's local DNS instance (BIND9) and added domain records for servicios.com and otrodominio.com.
+
+Virtual Host Files: Created configuration files under /etc/apache2/sites-available/:
+
+servicios.com.conf (pointing to default /var/www/html/)
+
+otrodominio.com.conf (pointing to /var/www/otrodominio/)
+
+Site Activation: Enabled the custom virtual sites with a2ensite and disabled default configurations with a2dissite 000-default.conf.
+
+Tested configuration syntax with apache2ctl configtest before reloading the service.
+
+Important Conclusions
+Multi-Site Capabilities: A single Apache instance on Ubuntu can host multiple distinct websites (Virtual Hosts) using domain-based routing linked to local DNS configurations.
+
+Built-in Security Options: Basic authentication via htpasswd and apache2.conf offers a fast method for restricting directory access without third-party tools.
+
+Verification Workflow: System modifications should always be validated systematically using CLI utilities (curl, wget, apache2ctl configtest) and service status reloads.

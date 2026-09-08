@@ -1,0 +1,45 @@
+Mensaje Principal
+HTTP (Protocolo de Transferencia de Hipertexto) es el protocolo de red utilizado para la comunicación entre clientes (navegadores) y servidores web. Funciona mediante un modelo de solicitud-respuesta sobre el puerto 80, transmitiendo mensajes estructurados que contienen encabezados (headers) y cuerpo (body).
+
+Puntos Clave
+1. Evolución y Versiones de HTTP
+HTTP/1.0: Conexiones no persistentes. Cada solicitud (petición) requiere abrir y cerrar una nueva conexión TCP.
+
+HTTP/1.1: Introduce las conexiones persistentes (Keep-Alive), permitiendo enviar múltiples solicitudes y respuestas sobre una misma conexión TCP, lo que mejora considerablemente la eficiencia.
+
+HTTP/2.0: Incorpora nuevos mecanismos avanzados de optimización para hacer la transferencia aún más eficiente.
+
+2. Métodos de Petición Principales (Verbos HTTP)
+GET: Obtiene o descarga un recurso del servidor. La información del recurso (parámetros) se incluye en la URL, haciéndola visible en el navegador.
+
+POST: Envía datos o sube archivos al servidor. La información viaja en el cuerpo del mensaje (payload), por lo que no es visible en la URL, siendo una forma más adecuada para transferir datos sensibles o extensos.
+
+PUT: Actualiza un recurso existente en el servidor.
+
+DELETE: Elimina un recurso del servidor.
+
+3. Códigos de Estado de Respuesta (RFC 822 / Estándar HTTP)
+Las respuestas del servidor se identifican mediante códigos numéricos según su categoría:
+
+1xx (Informativos): Indican que la solicitud fue recibida y se está procesando (ej. 100 Continue).
+
+2xx (Éxito): Petición procesada correctamente (ej. 200 OK).
+
+3xx (Redirección): El recurso ha sido movido a otra ubicación.
+
+4xx (Error del Cliente): Hubo un problema con la solicitud enviada por el cliente (ej. página no encontrada).
+
+5xx (Error del Servidor): El servidor falló al intentar procesar una solicitud válida.
+
+4. Estructura e Inspección de Mensajes
+Encabezados (Headers): Contienen metadatos de control como el tipo de contenido aceptado (Content-Type), la longitud del mensaje (Content-Length), la versión del servidor, la fecha, y la persistencia de la conexión (Connection: keep-alive).
+
+Análisis de Tráfico: El intercambio de mensajes entre cliente e IP de destino puede analizarse mediante capturadores de tráfico (sniffers) como Wireshark.
+
+5. Servidores Web Populares
+Apache: El servidor tradicional con años de presencia en el mercado.
+
+NGINX: Una alternativa altamente eficiente y ampliamente adoptada en los últimos años.
+
+Conclusión
+El protocolo HTTP define las reglas para que clientes y servidores web se entiendan. Con su evolución (de HTTP/1.0 a 1.1 y 2.0), ha optimizado el uso de recursos de red mediante conexiones persistentes. El dominio de sus métodos (GET, POST, PUT, DELETE), sus encabezados y sus códigos de respuesta es fundamental para comprender el tráfico y funcionamiento de la web moderna.
