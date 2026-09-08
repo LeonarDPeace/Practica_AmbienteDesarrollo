@@ -1,0 +1,32 @@
+# ──────────────────────────────────────────────────────────────────────────
+# named.conf.local — DNS MAESTRO
+# Parcial 1 · Servicios Telemáticos 2026-02
+# ──────────────────────────────────────────────────────────────────────────
+
+# Incluir clave TSIG para transferencias seguras
+include "/etc/bind/tsig.key";
+
+# ── Zona directa: empresa.local ──────────────────────────────────────────
+zone "empresa.local" {
+    type    master;
+    file    "/etc/bind/zones/empresa.local.zone";
+
+    # Solo permitir transferencia AXFR/IXFR con clave TSIG
+    allow-transfer { key transfer-key; };
+
+    # Notificar al esclavo cuando cambie el serial
+    notify     yes;
+    also-notify { 192.168.50.11; };
+};
+
+# ── Zona inversa: 192.168.50.x ───────────────────────────────────────────
+zone "50.168.192.in-addr.arpa" {
+    type    master;
+    file    "/etc/bind/zones/50.168.192.zone";
+    allow-transfer { key transfer-key; };
+    notify     yes;
+    also-notify { 192.168.50.11; };
+};
+
+# ── Logging (canales separados: queries, transfers, security) ────────────
+include "/etc/bind/named_logging.conf";

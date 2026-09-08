@@ -1,0 +1,31 @@
+# ──────────────────────────────────────────────────────────────────────────
+# named.conf.local — DNS ESCLAVO
+# Parcial 1 · Servicios Telemáticos 2026-02
+# ──────────────────────────────────────────────────────────────────────────
+
+# Incluir clave TSIG (copiada desde el maestro durante provisioning)
+include "/etc/bind/tsig.key";
+
+# ── Zona directa: empresa.local (esclavo) ────────────────────────────────
+zone "empresa.local" {
+    type    slave;
+    file    "/var/cache/bind/empresa.local.zone";  # BIND9 la guarda aquí
+
+    # Obtener zona desde el maestro, autenticado con TSIG
+    masters  { 192.168.50.10 key transfer-key; };
+
+    # Permitir NOTIFY del maestro con TSIG
+    allow-notify { key transfer-key; };
+};
+
+# ── Zona inversa: 192.168.50.x (esclavo) ────────────────────────────────
+zone "50.168.192.in-addr.arpa" {
+    type    slave;
+    file    "/var/cache/bind/50.168.192.zone";
+
+    masters  { 192.168.50.10 key transfer-key; };
+    allow-notify { key transfer-key; };
+};
+
+# ── Logging ──────────────────────────────────────────────────────────────
+include "/etc/bind/named_logging.conf";

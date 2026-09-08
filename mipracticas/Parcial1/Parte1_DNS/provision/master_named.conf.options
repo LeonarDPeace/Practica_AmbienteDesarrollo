@@ -1,0 +1,33 @@
+# ──────────────────────────────────────────────────────────────────────────
+# named.conf.options — DNS MAESTRO
+# Parcial 1 · Servicios Telemáticos 2026-02
+# IP Maestro: 192.168.50.10
+# ──────────────────────────────────────────────────────────────────────────
+options {
+    directory "/var/cache/bind";
+
+    # ── Seguridad: deshabilitar recursión (servidor autoritativo puro) ────
+    recursion no;
+    allow-recursion { none; };
+
+    # ── Restricciones de consulta y transferencia por defecto ────────────
+    allow-query   { any; };       # cualquier cliente puede consultar
+    allow-transfer { none; };     # transferencias SOLO con TSIG (en named.conf.local)
+
+    # ── Rate-Limiting (RRL) — anti-amplificación DNS ────────────────────
+    # Limita a 10 respuestas idénticas por IP por ventana de 5 segundos.
+    # slip 2: cada 2 respuestas descartadas, envía una truncada (TCP fallback).
+    rate-limit {
+        responses-per-second 10;
+        window               5;
+        slip                 2;
+        log-only             no;
+    };
+
+    # ── DNSSEC ──────────────────────────────────────────────────────────
+    dnssec-validation auto;
+
+    # ── Escuchar solo en la interfaz de red privada ──────────────────────
+    listen-on     { 127.0.0.1; 192.168.50.10; };
+    listen-on-v6  { none; };
+};

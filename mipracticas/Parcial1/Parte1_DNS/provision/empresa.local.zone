@@ -1,0 +1,31 @@
+; ──────────────────────────────────────────────────────────────────────────
+; empresa.local.zone — Zona directa
+; Parcial 1 · Servicios Telemáticos 2026-02
+; Serial: YYYYMMDDNN → 2026090801
+; ──────────────────────────────────────────────────────────────────────────
+$TTL 86400
+@   IN  SOA ns1.empresa.local. admin.empresa.local. (
+            2026090801  ; Serial    YYYYMMDDNN
+            3600        ; Refresh   (1 hora)
+            1800        ; Retry     (30 min)
+            604800      ; Expire    (7 días)
+            86400 )     ; Negative TTL (1 día)
+
+; ── Servidores de nombres ─────────────────────────────────────────────────
+@       IN  NS   ns1.empresa.local.
+@       IN  NS   ns2.empresa.local.
+
+; ── Registros A (IPv4) ────────────────────────────────────────────────────
+ns1     IN  A    192.168.50.10   ; DNS Maestro
+ns2     IN  A    192.168.50.11   ; DNS Esclavo
+parcial IN  A    192.168.50.10   ; Servidor web Apache
+mail    IN  A    192.168.50.10   ; Servidor de correo (mismo host)
+
+; ── Registro AAAA (IPv6 — loopback para prueba) ──────────────────────────
+ns1     IN  AAAA ::1
+
+; ── Alias CNAME ───────────────────────────────────────────────────────────
+www     IN  CNAME parcial.empresa.local.
+
+; ── Intercambiador de correo (MX) ────────────────────────────────────────
+@       IN  MX   10 mail.empresa.local.

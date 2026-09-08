@@ -1,0 +1,85 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║        Vagrantfile — Parcial 1 · Servicios Telemáticos 2026-02          ║
+# ╠══════════════════════════════════════════════════════════════════════════╣
+# ║  Ejecutar SIEMPRE desde:  mipracticas/Parcial1/                         ║
+# ║  Para prácticas anteriores usar el Vagrantfile de la RAÍZ               ║
+# ╠══════════════════════════════════════════════════════════════════════════╣
+# ║  Topología:                                                              ║
+# ║    parcial_master  192.168.50.10  → DNS Maestro + Apache2 + cloudflared ║
+# ║    parcial_slave   192.168.50.11  → DNS Esclavo (BIND9 slave)           ║
+# ╠══════════════════════════════════════════════════════════════════════════╣
+# ║  NOTA: IPs distintas a las del Vagrantfile raíz (.2/.3) para evitar     ║
+# ║        conflictos si ambos entornos corren simultáneamente.              ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+
+Vagrant.configure("2") do |config|
+  config.vm.boot_timeout = 600  # igual que Vagrantfile raíz
+
+  # Proveedor por defecto — mismo baseline que Vagrantfile raíz
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+    vb.cpus   = 1
+  end
+
+  # ─── VM 1: parcial_master ─────────────────────────────────────────────────
+  # Roles: DNS Maestro BIND9 · Apache2 (VirtualHost parcial.empresa.local)
+  #        cloudflared (túnel seguro)
+  # ─────────────────────────────────────────────────────────────────────────
+  config.vm.define :parcial_master do |master|
+    master.vm.box      = "bento/ubuntu-22.04"
+    master.vm.hostname = "dns-master"
+    master.vm.network  :private_network, ip: "192.168.50.10"
+
+    master.vm.provider "virtualbox" do |vb|
+      vb.name   = "Parcial1_Master"
+      vb.memory = "1024"
+      vb.cpus   = 1
+    end
+
+    # ── Paso 1: DNS Maestro (genera clave TSIG y la guarda en /vagrant)
+    master.vm.provision "shell",
+      name:       "DNS Maestro BIND9",
+      path:       "Parte1_DNS/provision/setup_dns_master.sh",
+      privileged: true
+
+    # ── Paso 2: Apache2 + compresión
+    master.vm.provision "shell",
+      name:       "Apache2 + mod_deflate + mod_brotli",
+      path:       "Parte2_Apache/provision/setup_apache.sh",
+      privileged: true
+
+    # ── Paso 3: Instalar cloudflared (iniciar manualmente después)
+    master.vm.provision "shell",
+      name:       "Instalar cloudflared",
+      path:       "Parte3_Tunel/setup_cloudflared.sh",
+      privileged: true
+  end
+
+  # ─── VM 2: parcial_slave ──────────────────────────────────────────────────
+  # Roles: DNS Esclavo BIND9
+  # IMPORTANTE: Vagrant provisiona las VMs en el orden en que están definidas.
+  #             El slave usa la clave TSIG generada por el master.
+  #             Provisionar master PRIMERO: vagrant up parcial_master
+  #             Luego: vagrant up parcial_slave
+  # ─────────────────────────────────────────────────────────────────────────
+  config.vm.define :parcial_slave do |slave|
+    slave.vm.box      = "bento/ubuntu-22.04"
+    slave.vm.hostname = "dns-slave"
+    slave.vm.network  :private_network, ip: "192.168.50.11"
+
+    slave.vm.provider "virtualbox" do |vb|
+      vb.name   = "Parcial1_Slave"
+      vb.memory = "1024"
+      vb.cpus   = 1
+    end
+
+    # DNS Esclavo (lee tsig.key generada por el master desde /vagrant)
+    slave.vm.provision "shell",
+      name:       "DNS Esclavo BIND9",
+      path:       "Parte1_DNS/provision/setup_dns_slave.sh",
+      privileged: true
+  end
+end

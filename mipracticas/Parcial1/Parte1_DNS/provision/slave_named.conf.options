@@ -1,0 +1,31 @@
+# ──────────────────────────────────────────────────────────────────────────
+# named.conf.options — DNS ESCLAVO
+# Parcial 1 · Servicios Telemáticos 2026-02
+# IP Esclavo: 192.168.50.11
+# ──────────────────────────────────────────────────────────────────────────
+options {
+    directory "/var/cache/bind";
+
+    # ── Seguridad: deshabilitar recursión ────────────────────────────────
+    recursion no;
+    allow-recursion { none; };
+
+    # ── Restricciones de consulta y transferencia ────────────────────────
+    allow-query   { any; };
+    allow-transfer { none; };
+
+    # ── Rate-Limiting (RRL) ──────────────────────────────────────────────
+    rate-limit {
+        responses-per-second 10;
+        window               5;
+        slip                 2;
+        log-only             no;
+    };
+
+    # ── DNSSEC ──────────────────────────────────────────────────────────
+    dnssec-validation auto;
+
+    # ── Escuchar solo en la interfaz de red privada ──────────────────────
+    listen-on     { 127.0.0.1; 192.168.50.11; };
+    listen-on-v6  { none; };
+};
