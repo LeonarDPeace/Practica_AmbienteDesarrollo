@@ -69,11 +69,13 @@ named-checkzone empresa.local /etc/bind/zones/empresa.local.zone
 named-checkzone 50.168.192.in-addr.arpa /etc/bind/zones/50.168.192.zone
 
 # ── 9. Habilitar e iniciar BIND9 ─────────────────────────────────────────
-echo "[9/9] Iniciando bind9..."
-systemctl enable bind9
-systemctl restart bind9
+echo "[9/9] Iniciando named..."
+usermod -aG bind vagrant || true
+systemctl daemon-reload
+systemctl enable named
+systemctl restart named
 sleep 2
-systemctl status bind9 --no-pager
+systemctl status named --no-pager
 
 echo ""
 echo "════════════════════════════════════════════"

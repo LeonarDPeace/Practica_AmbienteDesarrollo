@@ -63,11 +63,13 @@ echo "[7/8] Validando configuración BIND9..."
 named-checkconf
 
 # ── 8. Habilitar e iniciar BIND9 ─────────────────────────────────────────
-echo "[8/8] Iniciando bind9..."
-systemctl enable bind9
-systemctl restart bind9
+echo "[8/8] Iniciando named..."
+usermod -aG bind vagrant || true
+systemctl daemon-reload
+systemctl enable named
+systemctl restart named
 sleep 2
-systemctl status bind9 --no-pager
+systemctl status named --no-pager
 
 echo ""
 echo "════════════════════════════════════════════"
