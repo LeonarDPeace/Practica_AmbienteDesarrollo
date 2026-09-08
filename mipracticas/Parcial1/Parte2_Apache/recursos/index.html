@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parcial 1 de Servicios Telemáticos 2026-02 — VirtualHost Apache2 con compresión gzip y brotli">
+    <title>Parcial 1 — Servicios Telemáticos 2026</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <h1>Parcial 1 — Servicios Telemáticos</h1>
+            <p class="subtitle">2026-02 · VirtualHost: <code>parcial.empresa.local</code></p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="card" id="info-servidor">
+            <h2>Información del Servidor</h2>
+            <table>
+                <tr><th>Host</th><td>dns-master (192.168.50.10)</td></tr>
+                <tr><th>VirtualHost</th><td>parcial.empresa.local</td></tr>
+                <tr><th>Servidor DNS</th><td>BIND9 Maestro + Esclavo (192.168.50.11)</td></tr>
+                <tr><th>Compresión</th><td>mod_deflate (gzip) + mod_brotli</td></tr>
+                <tr><th>Túnel</th><td>cloudflared (trycloudflare.com)</td></tr>
+            </table>
+        </section>
+
+        <section class="card" id="recursos-prueba">
+            <h2>Recursos para Prueba de Compresión</h2>
+            <p>Estos archivos son utilizados por <code>medir_compresion.sh</code> para comparar
+               el rendimiento de los algoritmos de compresión en distintos niveles.</p>
+            <div class="recursos-grid">
+                <a href="index.html" class="recurso-item">
+                    <span class="tipo">HTML</span>
+                    <span class="nombre">index.html</span>
+                    <span class="desc">Página principal</span>
+                </a>
+                <a href="styles.css" class="recurso-item">
+                    <span class="tipo">CSS</span>
+                    <span class="nombre">styles.css</span>
+                    <span class="desc">Hoja de estilos</span>
+                </a>
+                <a href="app.js" class="recurso-item">
+                    <span class="tipo">JS</span>
+                    <span class="nombre">app.js</span>
+                    <span class="desc">Script JavaScript</span>
+                </a>
+                <a href="data.json" class="recurso-item">
+                    <span class="tipo">JSON</span>
+                    <span class="nombre">data.json</span>
+                    <span class="desc">Datos &gt;100 KB</span>
+                </a>
+                <a href="image.svg" class="recurso-item">
+                    <span class="tipo">SVG</span>
+                    <span class="nombre">image.svg</span>
+                    <span class="desc">Vector gráfico</span>
+                </a>
+                <a href="texto_grande.txt" class="recurso-item">
+                    <span class="tipo">TXT</span>
+                    <span class="nombre">texto_grande.txt</span>
+                    <span class="desc">Texto &gt;1 MB</span>
+                </a>
+                <a href="foto.jpg" class="recurso-item binary">
+                    <span class="tipo">JPG</span>
+                    <span class="nombre">foto.jpg</span>
+                    <span class="desc">Imagen (excluida de compresión)</span>
+                </a>
+                <a href="video_sample.mp4" class="recurso-item binary">
+                    <span class="tipo">MP4</span>
+                    <span class="nombre">video_sample.mp4</span>
+                    <span class="desc">Video (excluido de compresión)</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="card" id="comandos-verificacion">
+            <h2>Comandos de Verificación</h2>
+            <pre><code># Verificar compresión gzip
+curl -sI -H "Accept-Encoding: gzip" http://parcial.empresa.local/data.json \
+  | grep -i content-encoding
+
+# Verificar compresión brotli
+curl -sI -H "Accept-Encoding: br" http://parcial.empresa.local/data.json \
+  | grep -i content-encoding
+
+# Ejecutar script de medición completo
+sudo bash /vagrant/Parte2_Apache/medir_compresion.sh</code></pre>
+        </section>
+
+        <section class="card" id="fases-parcial">
+            <h2>Fases del Parcial</h2>
+            <ol class="fases-list">
+                <li>
+                    <strong>Parte 1 — DNS BIND9</strong>
+                    <p>Maestro/Esclavo con clave TSIG, zonas directa e inversa, hardening y auditoría.</p>
+                </li>
+                <li>
+                    <strong>Parte 2 — Apache y Compresión</strong>
+                    <p>VirtualHost con mod_deflate (niveles 1, 6, 9) y mod_brotli (niveles 5, 11).</p>
+                </li>
+                <li>
+                    <strong>Parte 3 — Túnel Seguro</strong>
+                    <p>cloudflared (trycloudflare.com) con verificación de preservación de Content-Encoding.</p>
+                </li>
+            </ol>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Servicios Telemáticos · Parcial 1 · 2026-02</p>
+            <p><a href="pagina_personalizada.html">Página de Identificación</a></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
