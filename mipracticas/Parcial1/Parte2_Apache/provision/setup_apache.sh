@@ -35,8 +35,11 @@ chmod 755 "${WWW_DIR}"
 echo "[4/9] Copiando recursos web estáticos..."
 cp "${RECURSOS_SRC}/index.html"    "${WWW_DIR}/"
 cp "${RECURSOS_SRC}/styles.css"    "${WWW_DIR}/"
+cp "${RECURSOS_SRC}/styles.min.css" "${WWW_DIR}/"
 cp "${RECURSOS_SRC}/app.js"        "${WWW_DIR}/"
+cp "${RECURSOS_SRC}/app.min.js"    "${WWW_DIR}/"
 cp "${RECURSOS_SRC}/image.svg"     "${WWW_DIR}/"
+cp "${RECURSOS_SRC}/feed.xml"      "${WWW_DIR}/"
 
 # Copiar página personalizada del túnel
 cp "/vagrant/Parte3_Tunel/pagina_personalizada.html" "${WWW_DIR}/"
@@ -53,6 +56,15 @@ with open('/var/www/parcial/texto_grande.txt', 'w', encoding='utf-8') as f:
     f.write('\n'.join(lines))
 size = __import__('os').path.getsize('/var/www/parcial/texto_grande.txt')
 print(f"  >> texto_grande.txt: {size:,} bytes ({size/1024/1024:.2f} MB)")
+PYEOF
+
+echo "[5/9] Generando index_grande.html (100-500 KB)..."
+python3 - <<'PYEOF'
+items = '\n'.join(f'<p>Registro de prueba de compresion HTML {i:05d}: Servicios Telematicos y redes tolerantes a fallos.</p>' for i in range(2600))
+with open('/var/www/parcial/index_grande.html', 'w', encoding='utf-8') as f:
+    f.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>HTML grande</title></head><body>\n')
+    f.write(items)
+    f.write('\n</body></html>\n')
 PYEOF
 
 echo "[5/9] Generando data.json (>100 KB)..."

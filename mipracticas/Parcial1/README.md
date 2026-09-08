@@ -178,6 +178,7 @@ mipracticas/Parcial1/
 │   │   ├── empresa.local.zone
 │   │   ├── 50.168.192.zone
 │   │   ├── named_logging.conf
+│   │   ├── verificar_dns_parcial.sh
 │   │   ├── setup_dns_master.sh
 │   │   ├── setup_dns_slave.sh
 │   │   └── tsig.key                 ← Auto-generado, NO editar
@@ -190,8 +191,12 @@ mipracticas/Parcial1/
 │   │   └── setup_apache.sh
 │   ├── recursos/
 │   │   ├── index.html
+│   │   ├── index_grande.html       ← Generado en la VM (100-500 KB)
 │   │   ├── styles.css
+│   │   ├── styles.min.css
 │   │   ├── app.js
+│   │   ├── app.min.js
+│   │   ├── feed.xml
 │   │   └── image.svg
 │   ├── medir_compresion.sh          ← Ejecutar como root en parcial_master
 │   ├── README_APACHE.md              ← Guia tecnica y checklist de Parte 2

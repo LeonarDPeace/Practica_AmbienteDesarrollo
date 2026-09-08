@@ -9,23 +9,21 @@ cuando debe excluirse.
 
 ## Archivos
 
-| Archivo | Funcion |
-|---|---|
-| `provision/setup_apache.sh` | Instala Apache, habilita modulos, copia recursos, genera archivos de prueba y activa el VirtualHost. |
-| `provision/parcial.empresa.local.conf` | Define el VirtualHost, DocumentRoot, tipos MIME y logs propios. |
-| `provision/compression.conf` | Configura `DeflateCompressionLevel`, `BrotliCompressionQuality`, tipos MIME y exclusion de binarios. |
-| `medir_compresion.sh` | Mide tamanos transferidos y tiempo para gzip 1/6/9 y Brotli 5/11; genera la tabla de resultados. |
-| `tabla_comparativa.md` | Registra los resultados obtenidos en una ejecucion del script y el analisis preliminar. |
-| `recursos/` | Contiene HTML, CSS, JavaScript y SVG que se copian al DocumentRoot. |
-
-## Requisitos del parcial cubiertos
+| Archivo                                  | Funcion                                                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `provision/setup_apache.sh`            | Instala Apache, habilita modulos, copia recursos, genera archivos de prueba y activa el VirtualHost.    |
+| `provision/parcial.empresa.local.conf` | Define el VirtualHost, DocumentRoot, tipos MIME y logs propios.                                         |
+| `provision/compression.conf`           | Configura`DeflateCompressionLevel`, `BrotliCompressionQuality`, tipos MIME y exclusion de binarios. |
+| `medir_compresion.sh`                  | Mide tamanos, tiempo y CPU local de `curl` para gzip 1/6/9 y Brotli 5/11; genera la tabla de resultados. |
+| `tabla_comparativa.md`                 | Registra los resultados obtenidos en una ejecucion del script y el analisis preliminar.                 |
+| `recursos/`                            | Contiene HTML pequeno/grande, CSS/JS original y minificado, XML y SVG que se copian al DocumentRoot.    |
 
 - Apache2 instalado en una VM y VirtualHost `parcial.empresa.local`.
 - `mod_deflate` para HTML, CSS, JavaScript, JSON, XML, SVG y texto plano.
 - `mod_brotli` para los mismos tipos de contenido.
 - Niveles gzip 1, 6 y 9; calidades Brotli 5 y 11.
-- Archivos generados en la VM: `data.json`, `texto_grande.txt`, `foto.jpg` y
-  `video_sample.mp4`.
+- Archivos generados en la VM: `index_grande.html`, `data.json`,
+  `texto_grande.txt`, `foto.jpg` y `video_sample.mp4`.
 - JPEG y MP4 excluidos porque ya usan compresion propia.
 
 ## Reproduccion
@@ -64,10 +62,12 @@ La primera y segunda consulta deben mostrar `Content-Encoding: gzip` y
 `Content-Encoding: br`, respectivamente. La imagen debe permanecer sin
 `Content-Encoding`.
 
-## Evidencia pendiente para la sustentacion
+## CPU y evidencia pendiente para la sustentacion
 
-El script mide tamano transferido y tiempo de respuesta. La rubric tambien pide
-mostrar CPU/costo, navegador y Wireshark. Antes de sustentar hay que:
+El script mide tamano transferido, tiempo de respuesta y tiempo de CPU local de
+`curl` con `/usr/bin/time`. Es un indicador reproducible del costo de la
+solicitud, pero no reemplaza un perfil directo del proceso Apache. La rubrica
+tambien pide mostrar navegador y Wireshark. Antes de sustentar hay que:
 
 1. repetir las mediciones en la VM que se demostrara;
 2. completar ratio y ahorro por recurso en `tabla_comparativa.md`;
@@ -75,6 +75,5 @@ mostrar CPU/costo, navegador y Wireshark. Antes de sustentar hay que:
 4. capturar trafico con Wireshark usando un filtro HTTP apropiado;
 5. conservar los resultados reales, sin inventar valores.
 
-Para CSS, JavaScript y HTML minificados/no minificados se deben publicar dos
-versiones si se desea demostrar literalmente esa comparacion; actualmente el
-repositorio contiene una version de cada recurso.
+CSS y JavaScript tienen versiones originales y minificadas. `index_grande.html`
+se genera durante el provisioning para cumplir el rango de tamano solicitado.
