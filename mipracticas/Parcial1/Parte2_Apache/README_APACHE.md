@@ -64,8 +64,9 @@ La primera y segunda consulta deben mostrar `Content-Encoding: gzip` y
 
 ## Evidencia en navegador y Wireshark
 
-La demostracion detallada esta en el README principal del parcial, secciones
-"Parte 2: Apache, navegador y Wireshark". En resumen, el navegador debe mostrar en
+La demostracion detallada esta en
+[`GUIA_SUSTENTACION.md`](../GUIA_SUSTENTACION.md), secciones "Navegador:
+DevTools Network" y "Wireshark". En resumen, el navegador debe mostrar en
 Network las cabeceras `Content-Encoding`/`Vary` y las columnas `Size` y
 `Transferred`. Wireshark debe capturar el trafico HTTP local sobre la interfaz
 VirtualBox Host-Only con `tcp port 80` (captura) o `http || tcp.port == 80`
