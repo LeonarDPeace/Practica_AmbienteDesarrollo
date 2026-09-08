@@ -11,7 +11,8 @@ options {
     allow-recursion { none; };
 
     # ── Restricciones de consulta y transferencia ────────────────────────
-    allow-query   { any; };
+    # Solo localhost y la red privada del laboratorio pueden consultar.
+    allow-query   { 127.0.0.1; 192.168.50.0/24; };
     allow-transfer { none; };
 
     # ── Rate-Limiting (RRL) ──────────────────────────────────────────────
@@ -24,6 +25,9 @@ options {
 
     # ── DNSSEC ──────────────────────────────────────────────────────────
     dnssec-validation auto;
+
+    # Solicitar diferencias incrementales cuando el maestro las conserva.
+    ixfr-from-differences yes;
 
     # ── Escuchar solo en la interfaz de red privada ──────────────────────
     listen-on     { 127.0.0.1; 192.168.50.11; };

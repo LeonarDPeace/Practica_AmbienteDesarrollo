@@ -11,7 +11,8 @@ options {
     allow-recursion { none; };
 
     # ── Restricciones de consulta y transferencia por defecto ────────────
-    allow-query   { any; };       # cualquier cliente puede consultar
+    # Solo localhost y la red privada del laboratorio pueden consultar.
+    allow-query   { 127.0.0.1; 192.168.50.0/24; };
     allow-transfer { none; };     # transferencias SOLO con TSIG (en named.conf.local)
 
     # ── Rate-Limiting (RRL) — anti-amplificación DNS ────────────────────
@@ -26,6 +27,9 @@ options {
 
     # ── DNSSEC ──────────────────────────────────────────────────────────
     dnssec-validation auto;
+
+    # Conservar diferencias de zona para permitir IXFR al esclavo.
+    ixfr-from-differences yes;
 
     # ── Escuchar solo en la interfaz de red privada ──────────────────────
     listen-on     { 127.0.0.1; 192.168.50.10; };

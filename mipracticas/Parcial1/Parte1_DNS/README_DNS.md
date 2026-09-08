@@ -17,9 +17,12 @@
 | ns1.empresa.local | A | 192.168.50.10 |
 | ns2.empresa.local | A | 192.168.50.11 |
 | parcial.empresa.local | A | 192.168.50.10 |
-| www.empresa.local | CNAME | parcial.empresa.local |
+| www.empresa.local | A / AAAA | 192.168.50.10 / 2001:db8:50::80 |
+| ftp.empresa.local | CNAME | www.empresa.local |
 | empresa.local | MX | 10 mail.empresa.local |
-| ns1.empresa.local | AAAA | ::1 |
+| mail.empresa.local | AAAA | 2001:db8:50::25 |
+| ns1.empresa.local | AAAA | 2001:db8:50::10 |
+| ns2.empresa.local | AAAA | 2001:db8:50::11 |
 | 10.50.168.192.in-addr.arpa | PTR | ns1.empresa.local |
 | 11.50.168.192.in-addr.arpa | PTR | ns2.empresa.local |
 
@@ -44,6 +47,10 @@ dig @192.168.50.11 empresa.local SOA +short
 # 3. Resolución directa (A y CNAME)
 dig @192.168.50.10 parcial.empresa.local A +short
 dig @192.168.50.10 www.empresa.local CNAME +short
+dig @192.168.50.10 www.empresa.local AAAA +short
+dig @192.168.50.10 mail.empresa.local AAAA +short
+dig @192.168.50.10 ns1.empresa.local AAAA +short
+dig @192.168.50.10 ns2.empresa.local AAAA +short
 
 # 4. Resolución inversa (PTR)
 dig @192.168.50.10 -x 192.168.50.10 +short
@@ -59,6 +66,9 @@ sudo dig @192.168.50.10 empresa.local AXFR -k /etc/bind/tsig.key
 sudo tail -n 20 /var/log/named/transfers.log
 sudo tail -n 20 /var/log/named/security.log
 sudo tail -n 20 /var/log/named/queries.log
+
+# 7. Secuencia automatizada de validacion (incluye AXFR y recursion):
+sudo bash /vagrant/Parte1_DNS/provision/verificar_dns_parcial.sh
 ```
 
 ## Archivos creados

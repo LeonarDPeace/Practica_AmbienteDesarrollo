@@ -18,14 +18,20 @@ $TTL 86400
 ; ── Registros A (IPv4) ────────────────────────────────────────────────────
 ns1     IN  A    192.168.50.10   ; DNS Maestro
 ns2     IN  A    192.168.50.11   ; DNS Esclavo
+www     IN  A    192.168.50.10   ; Servicio web
 parcial IN  A    192.168.50.10   ; Servidor web Apache
 mail    IN  A    192.168.50.10   ; Servidor de correo (mismo host)
 
-; ── Registro AAAA (IPv6 — loopback para prueba) ──────────────────────────
-ns1     IN  AAAA ::1
+; ── Registros AAAA (IPv6 de documentacion para el laboratorio) ──────────
+; La red Vagrant usa IPv4; estas direcciones cumplen la zona dual-stack y
+; no se anuncian como interfaces locales del servidor.
+www     IN  AAAA 2001:db8:50::80
+mail    IN  AAAA 2001:db8:50::25
+ns1     IN  AAAA 2001:db8:50::10
+ns2     IN  AAAA 2001:db8:50::11
 
 ; ── Alias CNAME ───────────────────────────────────────────────────────────
-www     IN  CNAME parcial.empresa.local.
+ftp     IN  CNAME www.empresa.local.
 
 ; ── Intercambiador de correo (MX) ────────────────────────────────────────
 @       IN  MX   10 mail.empresa.local.
