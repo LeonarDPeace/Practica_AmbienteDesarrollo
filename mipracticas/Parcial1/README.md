@@ -71,7 +71,7 @@ Este paso ejecuta en orden:
 2. `Parte2_Apache/provision/setup_apache.sh` → Apache2 + compresión
 3. `Parte3_Tunel/setup_cloudflared.sh` → Instalación cloudflared
 
-> ⏱️ Tiempo estimado: 5–10 minutos (incluye descarga de paquetes).
+> Tiempo estimado: 5–10 minutos (incluye descarga de paquetes).
 
 ### Paso 3 — Levantar VM Esclavo (DNS Slave)
 
